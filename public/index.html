@@ -561,6 +561,65 @@
             {id:'p5',type:'client-story',title:'The Groom Who Cried',content:"True story from last month:\n\nThe groom wanted to surprise his bride with a custom first dance song. He shared stories from their 7 years together.\n\nWhen she heard it at the reception, she looked at him and said 'How did you...?'\n\nHe was already crying. So was half the room.",used:false}
         ];
 
+        // ==================== NAME ROTATION SYSTEM ====================
+        const NAME_POOL = {
+            brides: ['Emma', 'Olivia', 'Ava', 'Isabella', 'Sophia', 'Mia', 'Charlotte', 'Amelia', 'Harper', 'Evelyn', 'Abigail', 'Emily', 'Elizabeth', 'Sofia', 'Avery', 'Ella', 'Scarlett', 'Grace', 'Chloe', 'Victoria', 'Riley', 'Aria', 'Lily', 'Aurora', 'Zoey', 'Nora', 'Hannah', 'Hazel', 'Luna', 'Savannah', 'Brooklyn', 'Leah', 'Zoe', 'Stella', 'Maya', 'Audrey', 'Claire', 'Lucy', 'Anna', 'Samantha', 'Caroline', 'Genesis', 'Aaliyah', 'Kennedy', 'Allison', 'Gabriella', 'Ashley', 'Madelyn', 'Addison', 'Natalie', 'Mackenzie', 'Delilah', 'Autumn', 'Valentina', 'Josephine', 'Bella', 'Skylar', 'Julia', 'Sophie', 'Katherine', 'Reagan', 'Madeline', 'Elena', 'Ivy', 'Faith', 'Andrea', 'Naomi', 'Ruby', 'Serenity', 'Peyton', 'Lauren', 'Maria', 'Eva', 'Piper', 'Lydia', 'Taylor', 'Morgan', 'Nicole', 'Jasmine', 'Rachel'],
+            grooms: ['Liam', 'Noah', 'Oliver', 'James', 'Elijah', 'William', 'Henry', 'Lucas', 'Benjamin', 'Theodore', 'Jack', 'Levi', 'Alexander', 'Mason', 'Ethan', 'Daniel', 'Jacob', 'Michael', 'Logan', 'Jackson', 'Sebastian', 'Aiden', 'Owen', 'Samuel', 'Ryan', 'Nathan', 'Dylan', 'Caleb', 'Luke', 'Isaac', 'Connor', 'Evan', 'Andrew', 'Joshua', 'Matthew', 'David', 'Joseph', 'Carter', 'Jayden', 'John', 'Gabriel', 'Anthony', 'Christian', 'Hunter', 'Cameron', 'Aaron', 'Thomas', 'Jordan', 'Justin', 'Austin', 'Kevin', 'Brandon', 'Adam', 'Patrick', 'Tyler', 'Jake', 'Marcus', 'Eric', 'Brian', 'Steven', 'Peter', 'Derek', 'Colin', 'Grant', 'Scott', 'Brett', 'Chase', 'Max', 'Cole', 'Trevor', 'Garrett', 'Kyle', 'Blake', 'Sean', 'Dominic', 'Victor', 'Ian', 'Jared', 'Dustin', 'Mitchell'],
+            fathers: ['Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles', 'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Mark', 'Donald', 'Steven', 'Paul', 'Andrew', 'Kenneth', 'George', 'Edward', 'Brian', 'Ronald', 'Timothy', 'Jason', 'Jeffrey', 'Frank', 'Scott', 'Eric', 'Stephen', 'Larry', 'Bruce', 'Dennis', 'Jerry', 'Greg', 'Raymond', 'Keith', 'Douglas', 'Terry', 'Roger', 'Carl', 'Gerald', 'Harold', 'Wayne', 'Arthur', 'Lawrence', 'Albert', 'Eugene', 'Russell', 'Roy', 'Louis'],
+            mothers: ['Mary', 'Patricia', 'Jennifer', 'Linda', 'Barbara', 'Elizabeth', 'Susan', 'Jessica', 'Sarah', 'Karen', 'Lisa', 'Nancy', 'Betty', 'Margaret', 'Sandra', 'Ashley', 'Kimberly', 'Emily', 'Donna', 'Michelle', 'Dorothy', 'Carol', 'Amanda', 'Melissa', 'Deborah', 'Stephanie', 'Rebecca', 'Sharon', 'Laura', 'Cynthia', 'Kathleen', 'Amy', 'Angela', 'Shirley', 'Anna', 'Brenda', 'Pamela', 'Emma', 'Nicole', 'Helen', 'Samantha', 'Katherine', 'Christine', 'Debra', 'Rachel', 'Carolyn', 'Janet', 'Catherine', 'Maria', 'Heather']
+        };
+
+        function getUsedNames() {
+            const stored = localStorage.getItem('personata_used_names');
+            if (!stored) return { names: [], timestamp: Date.now() };
+            const data = JSON.parse(stored);
+            // Clear if older than 14 days
+            if (Date.now() - data.timestamp > 14 * 24 * 60 * 60 * 1000) {
+                localStorage.removeItem('personata_used_names');
+                return { names: [], timestamp: Date.now() };
+            }
+            return data;
+        }
+
+        function saveUsedNames(names) {
+            localStorage.setItem('personata_used_names', JSON.stringify({
+                names: names,
+                timestamp: Date.now()
+            }));
+        }
+
+        function getRandomName(type) {
+            const usedData = getUsedNames();
+            const pool = NAME_POOL[type] || NAME_POOL.brides;
+            const available = pool.filter(n => !usedData.names.includes(n));
+            
+            // If we've used all names, reset the pool
+            if (available.length === 0) {
+                usedData.names = usedData.names.filter(n => !pool.includes(n));
+                saveUsedNames(usedData.names);
+                return pool[Math.floor(Math.random() * pool.length)];
+            }
+            
+            const name = available[Math.floor(Math.random() * available.length)];
+            usedData.names.push(name);
+            saveUsedNames(usedData.names);
+            return name;
+        }
+
+        function getNameInstructions() {
+            const bride = getRandomName('brides');
+            const groom = getRandomName('grooms');
+            const father = getRandomName('fathers');
+            const mother = getRandomName('mothers');
+            
+            return `IMPORTANT: When using names in stories, use ONLY these specific names for this post:
+- Bride's name: ${bride}
+- Groom's name: ${groom}  
+- Father's name: ${father}
+- Mother's name: ${mother}
+Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided above.`;
+        }
+
         // ==================== STATE ====================
         let currentUser = null;
         let userProfile = null;
@@ -1277,9 +1336,11 @@ Search Yelp, WeddingWire, The Knot, Google Business listings. Include at least 2
             document.getElementById('todayPostLoading').style.display = 'block';
             document.getElementById('todayPostContent').style.display = 'none';
             
+            const nameInstructions = getNameInstructions();
+            
             const prompts = {
                 'expert-tip': 'Create 1 Expert Tip about wedding music, first dances, or making weddings more personal and meaningful. Make it helpful and shareable.',
-                'client-story': 'Create 1 short Client Story (anonymized) about an emotional moment involving custom wedding music. Make it touching and authentic.',
+                'client-story': `Create 1 short Client Story (anonymized) about an emotional moment involving custom wedding music. Make it touching and authentic.\n\n${nameInstructions}`,
                 'poll': 'Create 1 engaging Poll Question about wedding music preferences, first dance choices, or wedding personalization. Include 3-4 answer options.',
                 'vendor-day': 'Create 1 Vendor Day promotional post introducing Personata Studios custom wedding songs. Highlight the conversation-driven process and that couples own 100% of their song.'
             };
@@ -1295,7 +1356,7 @@ Search Yelp, WeddingWire, The Knot, Google Business listings. Include at least 2
                         model: 'gpt-4o-mini',
                         max_tokens: 1000,
                         messages: [
-                            { role: 'system', content: 'You create social media content for Personata Studios, a company that creates custom original wedding songs through real conversations (not forms or AI). Write as the vendor. Be warm, authentic, and engaging. Keep posts concise and perfect for Facebook groups.' },
+                            { role: 'system', content: 'You create social media content for Personata Studios, a company that creates custom original wedding songs through real conversations (not forms or AI). Write as the vendor. Be warm, authentic, and engaging. Keep posts concise and perfect for Facebook groups. When telling client stories, ALWAYS use the specific names provided - never default to common names like Sarah, John, Mike, or Emily.' },
                             { role: 'user', content: prompts[postType] }
                         ]
                     })
@@ -1554,9 +1615,11 @@ Format clearly with headers and bullet points for easy reading.`;
             const box = document.getElementById('outputBox');
             box.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">Generating content...</div></div>';
             
+            const nameInstructions = getNameInstructions();
+            
             const prompts = {
                 tips: 'Create 3 Expert Tips about wedding music',
-                stories: 'Create 3 Client Stories (anonymized emotional moments)',
+                stories: `Create 3 Client Stories (anonymized emotional moments). Each story should use DIFFERENT names.\n\n${nameInstructions}\n\nFor the second story, use: Bride: ${getRandomName('brides')}, Groom: ${getRandomName('grooms')}\nFor the third story, use: Bride: ${getRandomName('brides')}, Groom: ${getRandomName('grooms')}`,
                 polls: 'Create 3 Poll Questions for engagement',
                 vendor: 'Create 2 Vendor Day promotional posts',
                 comments: 'Create 4 Comment reply templates',
@@ -1574,7 +1637,7 @@ Format clearly with headers and bullet points for easy reading.`;
                         model: 'gpt-4o-mini',
                         max_tokens: 3000,
                         messages: [
-                            { role: 'system', content: 'You create content for Personata Studios (custom wedding songs). Write as the VENDOR, not as a bride. Professional but warm. Format each piece as:\nTYPE: [type]\nTITLE: [title]\nCONTENT: [content]\n---' },
+                            { role: 'system', content: 'You create content for Personata Studios (custom wedding songs). Write as the VENDOR, not as a bride. Professional but warm. When telling client stories, ALWAYS use the specific names provided in the prompt - never default to common names like Sarah, John, Mike, or Emily. Format each piece as:\nTYPE: [type]\nTITLE: [title]\nCONTENT: [content]\n---' },
                             { role: 'user', content: prompts[type] }
                         ]
                     })
