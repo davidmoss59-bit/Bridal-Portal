@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Admin emails - update these to match your admin users
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email in ['david@personata.com', 'admin@personata.com'];
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read/write their own data
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Admins can read all user data
+      allow read: if isAdmin();
+    }
+  }
+}
