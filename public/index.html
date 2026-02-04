@@ -799,28 +799,34 @@
 
         // ==================== AUTH STATE LISTENER ====================
         auth.onAuthStateChanged(async (user) => {
+            console.log('Auth state changed:', user ? user.email : 'logged out');
             currentUser = user;
             
+            // Hide all screens first
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('profileModal').style.display = 'none';
+            
             if (user) {
-                await loadUserData();
-                
-                if (territory && territory.zip) {
-                    // User has territory, show main app
-                    document.getElementById('setupScreen').style.display = 'none';
-                    document.getElementById('profileModal').style.display = 'none';
-                    document.getElementById('mainApp').style.display = 'block';
-                    render();
-                } else {
-                    // User logged in but no territory, show profile setup
-                    document.getElementById('setupScreen').style.display = 'none';
-                    document.getElementById('mainApp').style.display = 'none';
+                try {
+                    await loadUserData();
+                    console.log('Territory loaded:', territory);
+                    
+                    if (territory && territory.zip) {
+                        // User has territory, show main app
+                        document.getElementById('mainApp').style.display = 'block';
+                        render();
+                    } else {
+                        // User logged in but no territory, show profile setup
+                        document.getElementById('profileModal').style.display = 'flex';
+                    }
+                } catch (error) {
+                    console.error('Error in auth handler:', error);
                     document.getElementById('profileModal').style.display = 'flex';
                 }
             } else {
                 // Not logged in, show setup/landing screen
                 document.getElementById('setupScreen').style.display = 'block';
-                document.getElementById('mainApp').style.display = 'none';
-                document.getElementById('profileModal').style.display = 'none';
             }
         });
 
