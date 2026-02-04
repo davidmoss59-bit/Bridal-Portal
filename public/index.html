@@ -805,14 +805,22 @@
                 await loadUserData();
                 
                 if (territory && territory.zip) {
-                    showApp();
+                    // User has territory, show main app
+                    document.getElementById('setupScreen').style.display = 'none';
+                    document.getElementById('profileModal').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    render();
                 } else {
-                    document.getElementById('setupScreen').classList.add('hide');
+                    // User logged in but no territory, show profile setup
+                    document.getElementById('setupScreen').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'none';
                     document.getElementById('profileModal').style.display = 'flex';
                 }
             } else {
-                document.getElementById('setupScreen').classList.remove('hide');
-                document.getElementById('mainApp').classList.remove('show');
+                // Not logged in, show setup/landing screen
+                document.getElementById('setupScreen').style.display = 'block';
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('profileModal').style.display = 'none';
             }
         });
 
@@ -925,9 +933,9 @@
         }
 
         async function showApp() {
-            document.getElementById('setupScreen').classList.add('hide');
+            document.getElementById('setupScreen').style.display = 'none';
             document.getElementById('profileModal').style.display = 'none';
-            document.getElementById('mainApp').classList.add('show');
+            document.getElementById('mainApp').style.display = 'block';
             document.getElementById('headerTerritory').textContent = territory.state;
             document.getElementById('headerZip').textContent = territory.zip;
             document.getElementById('headerRadius').textContent = territory.radius;
