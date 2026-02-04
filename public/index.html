@@ -155,7 +155,7 @@
             
             <!-- Subheadline -->
             <p style="color:#888;font-size:1.15rem;line-height:1.7;margin-bottom:50px;max-width:520px">
-                The ultimate command center for wedding sales professionals. Manage vendors, track outreach groups, and draft the perfect email and message.
+                The ultimate command center for wedding professionals. Manage vendors, track outreach groups, and draft perfect messages with AI.
             </p>
             
             <!-- Button -->
@@ -896,7 +896,7 @@
             document.getElementById('headerTerritory').textContent = territory.state;
             document.getElementById('headerZip').textContent = territory.zip;
             document.getElementById('headerRadius').textContent = territory.radius;
-            document.getElementById('headerRepName').textContent = userProfile?.name || 'User';
+            document.getElementById('headerRepName').textContent = currentUser?.email || 'User';
             
             // Try to get city name
             if (territory.city) {
