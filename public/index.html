@@ -224,35 +224,35 @@
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- Profile Setup Modal (for new users after auth) -->
-        <div id="profileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:20px">
-            <div style="background:#12121a;border:1px solid #d4a574;border-radius:20px;padding:40px;max-width:450px;width:100%;position:relative">
-                <h2 style="color:#d4a574;margin-bottom:10px;font-family:Georgia,serif;font-size:1.8rem">Complete Your Profile</h2>
-                <p style="color:#888;margin-bottom:30px;font-size:0.95rem">Set up your territory to get started.</p>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Your ZIP Code</label>
-                        <input type="text" id="zipInput" placeholder="e.g. 33301" maxlength="5">
-                    </div>
-                    <div class="form-group">
-                        <label>Radius</label>
-                        <select id="radiusSelect">
-                            <option value="25">25 mi</option>
-                            <option value="50" selected>50 mi</option>
-                            <option value="100">100 mi</option>
-                        </select>
-                    </div>
+    <!-- Profile Setup Modal (OUTSIDE setupScreen so it shows when setupScreen is hidden) -->
+    <div id="profileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:20px">
+        <div style="background:#12121a;border:1px solid #d4a574;border-radius:20px;padding:40px;max-width:450px;width:100%;position:relative">
+            <h2 style="color:#d4a574;margin-bottom:10px;font-family:Georgia,serif;font-size:1.8rem">Complete Your Profile</h2>
+            <p style="color:#888;margin-bottom:30px;font-size:0.95rem">Set up your territory to get started.</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Your ZIP Code</label>
+                    <input type="text" id="zipInput" placeholder="e.g. 33301" maxlength="5">
                 </div>
-                <div class="territory-info" id="territoryInfo">
-                    <div class="territory-name" id="territoryName"></div>
-                    <div class="territory-detail" id="territoryDetail"></div>
+                <div class="form-group">
+                    <label>Radius</label>
+                    <select id="radiusSelect">
+                        <option value="25">25 mi</option>
+                        <option value="50" selected>50 mi</option>
+                        <option value="100">100 mi</option>
+                    </select>
                 </div>
-                <button class="btn-full" id="setupBtn" disabled style="margin-top:20px;border-radius:50px;padding:15px">
-                    🚀 Launch Command Center
-                </button>
             </div>
+            <div class="territory-info" id="territoryInfo">
+                <div class="territory-name" id="territoryName"></div>
+                <div class="territory-detail" id="territoryDetail"></div>
+            </div>
+            <button class="btn-full" id="setupBtn" disabled style="margin-top:20px;border-radius:50px;padding:15px">
+                🚀 Launch Command Center
+            </button>
         </div>
     </div>
 
