@@ -1004,9 +1004,6 @@
 
         function renderStats() {
             const localGroups = buildLocalGroups();
-            document.getElementById('statPosts').textContent = posts.length;
-            document.getElementById('statGroups').textContent = localGroups.length + GROUPS.national.length + GROUPS.niche.length;
-            document.getElementById('statVendors').textContent = vendors.length;
             document.getElementById('vendorCount').textContent = vendors.length;
         }
 
