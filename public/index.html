@@ -228,6 +228,7 @@
                 <h1>Personata</h1>
                 <div class="badge">
                     👤 <span id="headerRepName"></span> • 📍 <span id="headerCity"></span>, <span id="headerTerritory"></span> <span id="headerZip"></span> • <span id="headerRadius"></span> mi
+                    <a id="changeZipBtn">change</a>
                     <a id="signOutBtn">sign out</a>
                 </div>
             </header>
@@ -710,6 +711,19 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             location.reload();
         }
 
+        function changeZip() {
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('zipInput').value = territory?.zip || '';
+            document.getElementById('radiusSelect').value = territory?.radius || 50;
+            if (territory?.zip) {
+                document.getElementById('territoryInfo').classList.add('show');
+                document.getElementById('territoryName').textContent = territory.stateName || '';
+                document.getElementById('territoryDetail').textContent = 'Real vendors via ChatGPT search';
+                document.getElementById('setupBtn').disabled = false;
+            }
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
         // ==================== ADMIN CONFIG ====================
         // Add your admin email addresses here
         const ADMIN_EMAILS = [
@@ -878,6 +892,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             // Auth actions
             document.getElementById('loginBtn').addEventListener('click', handleLogin);
             document.getElementById('signOutBtn').addEventListener('click', handleSignOut);
+            document.getElementById('changeZipBtn').addEventListener('click', changeZip);
             
             // Profile setup
             document.getElementById('zipInput').addEventListener('input', onZipInput);
