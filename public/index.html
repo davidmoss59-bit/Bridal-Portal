@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personata Command Center</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: system-ui, sans-serif; background: #0a0a0f; color: #f5f5f5; min-height: 100vh; }
@@ -138,6 +141,73 @@
         .error-box { background: rgba(200,100,100,0.1); border: 1px solid rgba(200,100,100,0.3); color: #e88; padding: 15px; border-radius: 8px; margin: 20px 0; }
         
         .vendor-count { background: rgba(212,165,116,0.2); padding: 4px 12px; border-radius: 12px; font-size: 13px; color: #d4a574; }
+
+        /* ===== Songwriter Brief Builder Styles ===== */
+        #songwriter .sw-sh{margin-bottom:32px}
+        #songwriter .sw-sh h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:#f5f5f5;margin-bottom:8px}
+        #songwriter .sw-sh p{font-size:14px;color:#888;max-width:640px}
+        #songwriter .sw-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,165,116,.15);border:1px solid #9a7d3d;border-radius:20px;padding:6px 16px;margin-bottom:24px;font-size:12px;font-weight:600;color:#d4a574;text-transform:uppercase;letter-spacing:1px}
+        #songwriter .sw-badge .d{width:8px;height:8px;border-radius:50%;background:#d4a574}
+        #songwriter .sw-fg{margin-bottom:24px}
+        #songwriter .sw-fr{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        #songwriter .sw-fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+        #songwriter .sw-cd{background:#12121a;border:1px solid #333;border-radius:12px;padding:28px;margin-bottom:20px}
+        #songwriter .sw-cd-g{background:rgba(212,165,116,.06);border-color:#9a7d3d}
+        #songwriter .sw-scg{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:32px 0}
+        #songwriter .sw-scb{aspect-ratio:1;border:2px solid #333;border-radius:12px;background:#12121a;color:#f5f5f5;font-family:'Playfair Display',serif;font-size:32px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+        #songwriter .sw-scb:hover{border-color:#9a7d3d;background:#1e1e2a}
+        #songwriter .sw-scb.sel{border-color:#d4a574;background:rgba(212,165,116,.15);color:#d4a574;box-shadow:0 0 30px rgba(212,165,116,.15)}
+        #songwriter .sw-pc{background:#12121a;border:1px solid #333;border-radius:12px;padding:24px;margin-bottom:16px}
+        #songwriter .sw-pch{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
+        #songwriter .sw-pn{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#d4a574,#9a7d3d);color:#0a0a0f;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace}
+        #songwriter .sw-pti{flex:1}
+        #songwriter .sw-pti input{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;background:transparent;border:none;border-bottom:1px solid #333;border-radius:0;padding:8px 4px;color:#f5f5f5}
+        #songwriter .sw-pti input:focus{border-color:#d4a574;box-shadow:none}
+        #songwriter .sw-nf{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #333}
+        #songwriter .sw-ht{font-size:12px;color:#888;margin-top:6px;font-style:italic}
+        #songwriter .sw-sec{animation:sw-fi .3s ease}
+        @keyframes sw-fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        #songwriter .sw-pvc{background:#fff;color:#1a1a1a;border-radius:12px;padding:48px;font-family:Georgia,serif;line-height:1.7;max-height:70vh;overflow-y:auto}
+        #songwriter .sw-pvc::-webkit-scrollbar-thumb{background:#ccc}
+        #songwriter .sw-pvc::-webkit-scrollbar-track{background:#f5f5f5}
+        #songwriter .sw-pvb{text-align:center;font-size:14px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:#333}
+        #songwriter .sw-pvr{border:none;border-top:2px solid #333;margin:16px 0}
+        #songwriter .sw-pvrl{border:none;border-top:1px solid #ddd;margin:16px 0}
+        #songwriter .sw-pvt{text-align:center;font-size:22px;margin:8px 0 4px;color:#1a1a1a}
+        #songwriter .sw-pvs{text-align:center;font-style:italic;color:#666;font-size:13px;margin-bottom:8px}
+        #songwriter .sw-pvm{text-align:center;font-size:12px;color:#999;margin-bottom:16px;line-height:1.8}
+        #songwriter .sw-pvst{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px;color:#1a1a1a}
+        #songwriter .sw-pvpb{border:1px solid #ddd;padding:16px 20px;margin-bottom:20px;line-height:1.8;font-size:14px;color:#1a1a1a}
+        #songwriter .sw-pvpb strong{color:#333}
+        #songwriter .sw-pvpt{margin-bottom:16px;padding-left:20px;border-left:3px solid #ddd;font-size:14px;color:#1a1a1a}
+        #songwriter .sw-pvpt strong{color:#222}
+        #songwriter .sw-pvvb{border:1px solid #bbb;padding:16px 20px;margin-top:24px;font-style:italic;font-size:14px;color:#444}
+        #songwriter .sw-pvf{text-align:center;margin-top:32px;font-size:12px;color:#999;letter-spacing:2px;text-transform:uppercase}
+        #songwriter .sw-pvsh{text-align:center;margin:40px 0 16px;padding:20px 0;border-top:2px solid #333;border-bottom:1px solid #ddd}
+        #songwriter label{color:#888}
+        #songwriter input[type="text"],#songwriter input[type="number"],#songwriter textarea,#songwriter select{background:#0a0a0f;border:1px solid #333;border-radius:8px;color:#fff;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;padding:12px 16px;width:100%;outline:none;transition:all .2s}
+        #songwriter input:focus,#songwriter textarea:focus,#songwriter select:focus{border-color:#d4a574;box-shadow:0 0 0 3px rgba(212,165,116,.15)}
+        #songwriter textarea{min-height:100px;resize:vertical;line-height:1.7}
+        #songwriter textarea.sw-tl{min-height:160px}
+        #songwriter select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+        #songwriter ::placeholder{color:#666;opacity:.6}
+        #songwriter .sw-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:1px solid #333;border-radius:8px;background:#12121a;color:#f5f5f5;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+        #songwriter .sw-btn:hover{border-color:#9a7d3d;background:#1e1e2a}
+        #songwriter .sw-btn-p{background:#d4a574;color:#0a0a0f;border-color:#d4a574;font-weight:600}
+        #songwriter .sw-btn-p:hover{background:#e0b884;border-color:#e0b884}
+        #songwriter .sw-btn svg{width:16px;height:16px}
+        #songwriter .sw-btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+        #sw-pbar .sw-pstep{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;min-width:52px}
+        #sw-pbar .sw-pstep::before{content:'';position:absolute;top:14px;left:50%;right:-50%;height:2px;background:#333;z-index:0}
+        #sw-pbar .sw-pstep:last-child::before{display:none}
+        #sw-pbar .sw-pstep.done::before{background:#9a7d3d}
+        #sw-pbar .sw-pdot{width:32px;height:32px;border-radius:50%;border:2px solid #333;background:#0a0a0f;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#888;position:relative;z-index:1;transition:all .2s}
+        #sw-pbar .sw-pstep.on .sw-pdot{border-color:#d4a574;color:#d4a574;box-shadow:0 0 16px rgba(212,165,116,.15)}
+        #sw-pbar .sw-pstep.done .sw-pdot{border-color:#d4a574;background:#d4a574;color:#0a0a0f}
+        #sw-pbar .sw-plbl{margin-top:5px;font-size:9px;color:#888;letter-spacing:.3px;text-transform:uppercase;font-weight:500;white-space:nowrap;text-align:center}
+        #sw-pbar .sw-pstep.on .sw-plbl{color:#d4a574}
+        #sw-pbar .sw-pstep.done .sw-plbl{color:#bbb}
+        @media(max-width:768px){#songwriter .sw-fr,#songwriter .sw-fr3{grid-template-columns:1fr}#songwriter .sw-scg{grid-template-columns:repeat(3,1fr)}#songwriter .sw-pvc{padding:24px}#sw-pbar .sw-plbl{font-size:7px}}
     </style>
 </head>
 <body>
@@ -239,6 +309,7 @@
                 <div class="tab" data-tab="groups">FB Groups</div>
                 <div class="tab" data-tab="generate">✨ Content Creator</div>
                 <div class="tab" data-tab="library">Library</div>
+                <div class="tab" data-tab="songwriter">🎵 Songwriter Brief</div>
                 <div class="tab" data-tab="admin" id="adminTab" style="display:none;background:rgba(200,100,100,0.2);border-color:#c77d8e">🔐 Admin</div>
             </div>
 
@@ -486,6 +557,18 @@
             <div class="tab-content" id="library">
                 <h2 class="section-title">Content Library</h2>
                 <div class="card-grid" id="libraryGrid"></div>
+            </div>
+
+            <!-- Songwriter Brief Builder Tab -->
+            <div class="tab-content" id="songwriter">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                    <h2 class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">🎵 Songwriter Brief Builder</h2>
+                    <button class="btn-sm btn-outline" onclick="SW.resetAll()">🔄 Reset Brief</button>
+                </div>
+                <div id="sw-wrap" style="max-width:900px;margin:0 auto">
+                    <div id="sw-pbar" style="display:flex;align-items:center;margin-bottom:48px;overflow-x:auto;padding-bottom:4px"></div>
+                    <div id="sw-main"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1009,6 +1092,12 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             // Load admin data when switching to admin tab
             if (tabId === 'admin' && isAdmin()) {
                 loadAdminData();
+            }
+            
+            // Initialize songwriter brief on first visit
+            if (tabId === 'songwriter' && !window.swInitialized) {
+                window.swInitialized = true;
+                SW.init();
             }
         }
 
@@ -1733,6 +1822,170 @@ Format clearly with headers and bullet points for easy reading.`;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2000);
         }
+
+        // ==================== SONGWRITER BRIEF BUILDER ====================
+        const SW = (function() {
+            let SC = 0, CV = 'setup', songs = [], proj = {projectName:'',collectionType:'Demo Collection',eventDate:'',creativeDirector:''};
+
+            function ES(){return{songType:'',songTypeCustom:'',songTitle:'',songSubtitle:'',songStructure:'Standard (Verse/Chorus)',songTone:'',customerName:'',customerRelationship:'',singerName:'',singerAge:'',singingTo:'',singerWho:'',singerBackground:'',singerPersonality:'',singerEmotional:'',singerVoice:'',points:Array.from({length:10},()=>({title:'',body:''})),singerQuote:''}}
+
+            function SL(){const s=['setup','project'];for(let i=1;i<=SC;i++)s.push('info-'+i,'voice-'+i,'points-'+i);s.push('preview');return s}
+            function navigateTo(v){saveDOM();CV=v;render();window.scrollTo({top:0,behavior:'smooth'})}
+            function goNext(){const s=SL(),i=s.indexOf(CV);if(i<s.length-1)navigateTo(s[i+1])}
+            function goPrev(){const s=SL(),i=s.indexOf(CV);if(i>0)navigateTo(s[i-1])}
+
+            function saveDOM(){
+                if(CV==='project'){const g=id=>(document.getElementById(id)||{}).value||'';proj.projectName=g('sw-pn').trim();proj.collectionType=g('sw-ct');proj.eventDate=g('sw-ed').trim();proj.creativeDirector=g('sw-cd').trim();return}
+                const m=CV.match(/^(info|voice|points)-(\d+)$/);if(!m)return;
+                const x=+m[2]-1,s=songs[x],P='sw-s'+x+'-',g=id=>(document.getElementById(P+id)||{}).value||'';
+                if(m[1]==='info'){s.songType=g('st');s.songTypeCustom=g('stc').trim();s.songTitle=g('tt').trim();s.songSubtitle=g('sub').trim();s.songStructure=g('str');s.songTone=g('tn').trim()}
+                else if(m[1]==='voice'){s.customerName=g('cn').trim();s.customerRelationship=g('cr').trim();s.singerName=g('sn').trim();s.singerAge=g('sa').trim();s.singingTo=g('sto').trim();s.singerWho=g('sw').trim();s.singerBackground=g('sb').trim();s.singerPersonality=g('sp').trim();s.singerEmotional=g('se').trim();s.singerVoice=g('sv').trim()}
+                else{for(let i=0;i<10;i++){s.points[i].title=g('p'+i+'t').trim();s.points[i].body=g('p'+i+'b').trim()}s.singerQuote=g('q').trim()}
+            }
+
+            function render(){renderPB();const el=document.getElementById('sw-main');
+                if(CV==='setup')el.innerHTML=hSetup();
+                else if(CV==='project')el.innerHTML=hProj();
+                else if(CV==='preview')el.innerHTML=hPrev();
+                else{const m=CV.match(/^(info|voice|points)-(\d+)$/);if(m){const x=+m[2]-1;el.innerHTML=m[1]==='info'?hInfo(x):m[1]==='voice'?hVoice(x):hPts(x)}}
+            }
+            function renderPB(){const steps=SL(),ci=steps.indexOf(CV);document.getElementById('sw-pbar').innerHTML=steps.map((st,i)=>{
+                let l,d;if(st==='setup'){l='Setup';d='⚙'}else if(st==='project'){l='Project';d='P'}else if(st==='preview'){l='Export';d='✓'}
+                else{const[pt,n]=st.split('-');d=n+'.'+{info:'1',voice:'2',points:'3'}[pt];l='S'+n+' '+{info:'Info',voice:'Voice',points:'Pts'}[pt]}
+                return `<div class="sw-pstep ${i===ci?'on':i<ci?'done':''}" onclick="SW.navigateTo('${st}')"><div class="sw-pdot">${d}</div><div class="sw-plbl">${l}</div></div>`}).join('')}
+
+            function H(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+            function hSetup(){return `<div class="sw-sec"><div class="sw-sh"><h2>How Many Songs?</h2><p>Every project starts here. How many individual songs does this customer need? Each song gets its own persona, story points, and songwriter brief.</p></div>
+<div class="sw-scg">${[1,2,3,4,5,6].map(n=>`<button class="sw-scb ${SC===n?'sel':''}" onclick="SW.pickSC(${n})">${n}</button>`).join('')}</div>
+<div style="text-align:center;margin-top:8px;font-size:13px;color:#888">${SC>0?`<strong style="color:#d4a574">${SC} song${SC>1?'s':''}</strong> selected`:'Select 1–6 songs'}</div>
+<div class="sw-nf"><div></div><button class="sw-btn sw-btn-p" onclick="SW.goNext()" ${SC===0?'disabled':''}>Continue → Project Details</button></div></div>`}
+
+            function pickSC(n){SC=n;while(songs.length<n)songs.push(ES());if(songs.length>n)songs.length=n;render()}
+
+            function hProj(){const p=proj;return `<div class="sw-sec"><div class="sw-sh"><h2>Project Details</h2><p>The event, the client, and what we're creating.</p></div>
+<div class="sw-cd">
+<div class="sw-fg"><label>Project / Event Name</label><input type="text" id="sw-pn" value="${H(p.projectName)}" placeholder='e.g. "The Sullivan – Moriarity Wedding"'></div>
+<div class="sw-fr"><div class="sw-fg"><label>Collection Type</label><select id="sw-ct">${['Demo Collection','Final Production','Rush Order','Custom'].map(o=>`<option ${p.collectionType===o?'selected':''}>${o}</option>`).join('')}</select></div>
+<div class="sw-fg"><label>Event Date</label><input type="text" id="sw-ed" value="${H(p.eventDate)}" placeholder="e.g. September 14, 2025"></div></div>
+<div class="sw-fg"><label>Creative Director</label><input type="text" id="sw-cd" value="${H(p.creativeDirector)}" placeholder="Your name"></div>
+<div style="padding:16px 0 0;border-top:1px solid #333;margin-top:8px"><span style="font-size:13px;color:#888">This project has <strong style="color:#d4a574">${SC} song${SC>1?'s':''}</strong>. Each gets its own brief.</span></div></div>
+<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Song Count</button><button class="sw-btn sw-btn-p" onclick="SW.goNext()">Continue → Song 1 Info</button></div></div>`}
+
+            function hInfo(x){const s=songs[x],n=x+1,P='sw-s'+x+'-';
+const ots=['','Father-Daughter Dance','Mother-Son Dance','First Dance','Anniversary Song','Memorial / Tribute','Proposal','Birthday Tribute','Graduation','Corporate / Brand','Custom'];
+const str=['Standard (Verse/Chorus)','Dual Perspective','Narrative / Through-composed',"Songwriter's Discretion"];
+return `<div class="sw-sec"><div class="sw-badge"><div class="d"></div>Song ${n} of ${SC}</div>
+<div class="sw-sh"><h2>Song ${n} — Information</h2><p>Define this song's purpose, title, and emotional framing.</p></div>
+<div class="sw-cd">
+<div class="sw-fr"><div class="sw-fg"><label>Song Occasion / Type</label><select id="${P}st">${ots.map(o=>`<option value="${o}" ${s.songType===o?'selected':''}>${o||'— Select —'}</option>`).join('')}</select></div>
+<div class="sw-fg"><label>Custom Occasion</label><input type="text" id="${P}stc" value="${H(s.songTypeCustom)}" placeholder="If 'Custom' above"></div></div>
+<div class="sw-fg"><label>Song Title</label><input type="text" id="${P}tt" value="${H(s.songTitle)}" placeholder="Working title"><div class="sw-ht">Can be refined by the songwriter.</div></div>
+<div class="sw-fg"><label>Song Subtitle / Framing Line</label><input type="text" id="${P}sub" value="${H(s.songSubtitle)}" placeholder='e.g. "A father sings to his daughter on her wedding day"'><div class="sw-ht">One line that sets the emotional perspective.</div></div>
+<div class="sw-fr"><div class="sw-fg"><label>Structure</label><select id="${P}str">${str.map(o=>`<option ${s.songStructure===o?'selected':''}>${o}</option>`).join('')}</select></div>
+<div class="sw-fg"><label>Desired Tone</label><input type="text" id="${P}tn" value="${H(s.songTone)}" placeholder='e.g. "Stoic, tender, hard-won"'></div></div></div>
+<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Back</button><button class="sw-btn sw-btn-p" onclick="SW.goNext()">Continue → The Voice</button></div></div>`}
+
+            function hVoice(x){const s=songs[x],n=x+1,P='sw-s'+x+'-';
+return `<div class="sw-sec"><div class="sw-badge"><div class="d"></div>Song ${n} of ${SC}</div>
+<div class="sw-sh"><h2>Song ${n} — The Voice</h2><p>From your interview with the customer, build the persona whose voice the songwriter will write in.</p></div>
+<div class="sw-cd sw-cd-g" style="margin-bottom:20px">
+<div class="sw-fg" style="margin-bottom:12px"><label>Customer Being Interviewed</label><input type="text" id="${P}cn" value="${H(s.customerName)}" placeholder="Who are you interviewing? e.g. Emma Sullivan"></div>
+<div class="sw-fg" style="margin-bottom:0"><label>Relationship to the Voice</label><input type="text" id="${P}cr" value="${H(s.customerRelationship)}" placeholder="e.g. Daughter — telling us about her father Tom">
+<div class="sw-ht">The customer tells us the stories. The voice below is who the song is written <em>as</em>.</div></div></div>
+<div class="sw-cd"><div style="margin-bottom:20px"><span style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#d4a574;font-weight:600">Song Persona — The Voice the Songwriter Writes As</span></div>
+<div class="sw-fr3"><div class="sw-fg"><label>Name</label><input type="text" id="${P}sn" value="${H(s.singerName)}" placeholder="e.g. Tom Sullivan"></div>
+<div class="sw-fg"><label>Age</label><input type="number" id="${P}sa" value="${H(s.singerAge)}" placeholder="61"></div>
+<div class="sw-fg"><label>Singing To</label><input type="text" id="${P}sto" value="${H(s.singingTo)}" placeholder="e.g. His daughter Emma, 29"></div></div>
+<div class="sw-fg"><label>Who They Are</label><input type="text" id="${P}sw" value="${H(s.singerWho)}" placeholder="How the customer described them"><div class="sw-ht">Ask: "Tell me about this person. What do they do?"</div></div>
+<div class="sw-fg"><label>Background</label><textarea id="${P}sb" placeholder="Where they come from, cultural roots, family history.">${H(s.singerBackground)}</textarea><div class="sw-ht">Ask: "Where did they grow up? What shaped them?"</div></div>
+<div class="sw-fg"><label>Personality</label><textarea id="${P}sp" placeholder="How they move through the world.">${H(s.singerPersonality)}</textarea><div class="sw-ht">Ask: "How would you describe their personality?"</div></div>
+<div class="sw-fg"><label>Emotional Style</label><textarea id="${P}se" placeholder="How do they handle feelings?">${H(s.singerEmotional)}</textarea><div class="sw-ht">Ask: "How do they show love? What's hard for them?"</div></div>
+<div class="sw-fg"><label>Voice in the Song</label><textarea id="${P}sv" placeholder="Your creative director note to the songwriter.">${H(s.singerVoice)}</textarea><div class="sw-ht">Synthesize what you heard into songwriter guidance.</div></div></div>
+<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Back</button><button class="sw-btn sw-btn-p" onclick="SW.goNext()">Continue → 10 Points</button></div></div>`}
+
+            function hPts(x){const s=songs[x],n=x+1,P='sw-s'+x+'-';
+let cards='';for(let i=0;i<10;i++){cards+=`<div class="sw-pc"><div class="sw-pch"><div class="sw-pn">${i+1}</div><div class="sw-pti"><input type="text" id="${P}p${i}t" value="${H(s.points[i].title)}" placeholder="Moment title"></div></div>
+<div class="sw-fg" style="margin-bottom:0"><textarea class="sw-tl" id="${P}p${i}b" placeholder="What did the customer tell you about this moment?">${H(s.points[i].body)}</textarea></div></div>`}
+const isLast=x===SC-1,nxt=isLast?'Preview &amp; Export →':'Continue → Song '+(x+2)+' Info',act=isLast?"SW.navigateTo('preview')":"SW.goNext()";
+return `<div class="sw-sec"><div class="sw-badge"><div class="d"></div>Song ${n} of ${SC}</div>
+<div class="sw-sh"><h2>Song ${n} — 10 Points</h2><p>The moments, memories, and emotional truths from your interview. Each is a story only someone who listened would know.</p></div>
+${cards}
+<div class="sw-cd" style="margin-top:24px"><div class="sw-fg" style="margin-bottom:0"><label>Singer's Voice — In Their Own Words</label>
+<textarea class="sw-tl" id="${P}q" placeholder="Capture how the song's voice would express themselves.">${H(s.singerQuote)}</textarea>
+<div class="sw-ht">The closing quote that gives the songwriter the singer's authentic voice.</div></div></div>
+<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Back</button><button class="sw-btn sw-btn-p" onclick="${act}">${nxt}</button></div></div>`}
+
+            function hPrev(){saveDOM();const p=proj;let allH='';
+for(let i=0;i<SC;i++){const s=songs[i],n=i+1,ty=s.songType==='Custom'?s.songTypeCustom:s.songType,fp=s.points.filter(t=>t.title||t.body);
+let ph='';fp.forEach((t,j)=>{ph+=`<div class="sw-pvpt"><strong>${j+1}. ${t.title||'(Untitled)'}</strong> — ${t.body||'<em>No details.</em>'}</div>`});
+if(i>0)allH+=`<div class="sw-pvsh"><strong style="font-size:12px;letter-spacing:3px;color:#999">SONG ${n}</strong></div>`;
+allH+=`<div style="text-align:center;margin:20px 0"><strong style="font-size:15px;letter-spacing:1px">${(ty||'SONG '+n).toUpperCase()}</strong><br>
+<span style="font-size:20px;font-style:italic">\u201C${s.songTitle||'Untitled'}\u201D</span><br><em style="color:#666;font-size:13px">${s.songSubtitle||''}</em></div><hr class="sw-pvrl">
+<div class="sw-pvst">Singer Persona: ${s.singerName||'\u2014'}</div>
+<div class="sw-pvpb"><strong>Age:</strong> ${s.singerAge||'\u2014'}<br><strong>Who They Are:</strong> ${s.singerWho||'\u2014'}<br><strong>Background:</strong> ${s.singerBackground||'\u2014'}<br><strong>Personality:</strong> ${s.singerPersonality||'\u2014'}<br><strong>Emotional Style:</strong> ${s.singerEmotional||'\u2014'}<br><strong>Voice in the Song:</strong> ${s.singerVoice||'\u2014'}<br><strong>Singing To:</strong> ${s.singingTo||'\u2014'}</div>
+<div class="sw-pvst">10 Points for the Songwriter</div>${ph||'<p style="color:#999;font-style:italic">No points yet.</p>'}
+${s.singerQuote?`<div class="sw-pvvb"><strong>SINGER\u2019S VOICE:</strong> \u201C${s.singerQuote}\u201D</div>`:''}`}
+const sm=songs.map((s,i)=>(s.songType==='Custom'?s.songTypeCustom:s.songType)||'Song '+(i+1)).join(' \u2022 ');
+return `<div class="sw-sec"><div class="sw-sh"><h2>Preview &amp; Export</h2><p>Review the complete brief — all ${SC} song${SC>1?'s':''} — before exporting.</p></div>
+<div class="sw-pvc">
+<div class="sw-pvb">PERSONATA STUDIOS</div><hr class="sw-pvr"><div class="sw-pvt">Songwriter Briefs</div><div class="sw-pvs"><em>Singer Personas &amp; 10-Point Song Maps</em></div><hr class="sw-pvr">
+<div class="sw-pvm">${p.projectName||'Untitled Project'} \u2022 ${p.collectionType}${p.eventDate?' \u2022 '+p.eventDate:''}<br>${sm}<br>${p.creativeDirector?'Creative Director: '+p.creativeDirector:''}</div>
+${allH}
+<hr class="sw-pvr" style="margin-top:32px"><div class="sw-pvf">PERSONATA STUDIOS<br><em style="font-size:11px;letter-spacing:0">Every song has a story. We make sure yours is heard.</em><br>personatastudios.com</div></div>
+<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Edit</button><button class="sw-btn sw-btn-p" onclick="SW.exportDocx()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export .docx</button></div></div>`}
+
+            async function exportDocx(){
+                saveDOM();const p=proj;
+                const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,AlignmentType,BorderStyle,WidthType,PageBreak}=docx;
+                const bdr={style:BorderStyle.SINGLE,size:1,color:"999999"},bds={top:bdr,bottom:bdr,left:bdr,right:bdr};
+                function pr(l,v){return new Paragraph({spacing:{after:60},children:[new TextRun({text:l,bold:true,font:"Georgia",size:22}),new TextRun({text:v||"\u2014",font:"Georgia",size:22})]})}
+                function rl(){return new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"\u2501".repeat(50),font:"Georgia",size:18,color:"666666"})]})}
+                const ch=[];
+                const sm=songs.map((s,i)=>(s.songType==='Custom'?s.songTypeCustom:s.songType)||'Song '+(i+1)).join(' \u2022 ');
+                ch.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:80},children:[new TextRun({text:"PERSONATA STUDIOS",bold:true,font:"Georgia",size:28,characterSpacing:200})]}),rl(),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Songwriter Briefs",font:"Georgia",size:36})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Singer Personas & 10-Point Song Maps",italics:true,font:"Georgia",size:22,color:"666666"})]}),rl(),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:80},children:[new TextRun({text:p.projectName||'Untitled Project',font:"Georgia",size:24})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:`${p.collectionType} \u2022 ${SC} Song${SC>1?'s':''} \u2022 ${SC} Singer${SC>1?'s':''} \u2022 ${SC} Stor${SC>1?'ies':'y'}`,font:"Georgia",size:20,color:"666666"})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:"Each brief contains a singer persona and 10 key emotional/narrative points designed to guide the songwriter through the story the song needs to tell.",italics:true,font:"Georgia",size:20,color:"888888"})]}));
+
+                for(let i=0;i<SC;i++){const s=songs[i],n=i+1,ty=s.songType==='Custom'?s.songTypeCustom:s.songType,fp=s.points.filter(t=>t.title||t.body);
+                    if(i>0)ch.push(new Paragraph({children:[new PageBreak()]}));
+                    ch.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:60},children:[new TextRun({text:`SONG ${n} \u2022 ${(ty||'UNTITLED').toUpperCase()}`,bold:true,font:"Georgia",size:26})]}),
+                        new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:60},children:[new TextRun({text:`\u201C${s.songTitle||'Untitled'}\u201D`,italics:true,font:"Georgia",size:32})]}),
+                        new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:100},children:[new TextRun({text:s.songSubtitle||'',italics:true,font:"Georgia",size:22,color:"666666"})]}),rl(),
+                        new Paragraph({spacing:{before:200,after:160},children:[new TextRun({text:`Singer Persona: ${s.singerName||'\u2014'}`,bold:true,font:"Georgia",size:26})]}),
+                        new Table({width:{size:9360,type:WidthType.DXA},columnWidths:[9360],rows:[new TableRow({children:[new TableCell({borders:bds,width:{size:9360,type:WidthType.DXA},margins:{top:120,bottom:120,left:200,right:200},
+                            children:[pr("Age: ",s.singerAge),pr("Who They Are: ",s.singerWho),pr("Background: ",s.singerBackground),pr("Personality: ",s.singerPersonality),pr("Emotional Style: ",s.singerEmotional),pr("Voice in the Song: ",s.singerVoice),pr("Singing To: ",s.singingTo)]})]})]})
+                    );
+                    ch.push(new Paragraph({spacing:{before:360,after:200},children:[new TextRun({text:"10 POINTS FOR THE SONGWRITER",bold:true,font:"Georgia",size:26})]}));
+                    fp.forEach((t,j)=>{ch.push(new Paragraph({spacing:{before:200,after:80},indent:{left:360},children:[new TextRun({text:`${j+1}. ${t.title||'(Untitled)'}`,bold:true,font:"Georgia",size:22}),new TextRun({text:` \u2014 ${t.body||''}`,font:"Georgia",size:22})]}))});
+                    if(s.singerQuote){ch.push(new Paragraph({spacing:{before:300},children:[]}),
+                        new Table({width:{size:9360,type:WidthType.DXA},columnWidths:[9360],rows:[new TableRow({children:[new TableCell({borders:bds,width:{size:9360,type:WidthType.DXA},margins:{top:120,bottom:120,left:200,right:200},
+                            children:[new Paragraph({children:[new TextRun({text:"SINGER\u2019S VOICE: ",bold:true,font:"Georgia",size:22}),new TextRun({text:`\u201C${s.singerQuote}\u201D`,italics:true,font:"Georgia",size:22})]})]})]})]}))}
+                }
+                ch.push(new Paragraph({children:[new PageBreak()]}),rl(),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:200,after:120},children:[new TextRun({text:`${SC} Song${SC>1?'s':''}. ${SC} Voice${SC>1?'s':''}. One ${p.projectName?p.projectName.split(' ').pop():'Story'}.`,font:"Georgia",size:24})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Each persona is a real person with a real story.",font:"Georgia",size:22,color:"666666"})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:120},children:[new TextRun({text:"Each point is a moment that only emerged because someone listened.",italics:true,font:"Georgia",size:22,color:"666666"})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"That\u2019s the Personata difference.",italics:true,font:"Georgia",size:22,color:"999999"})]}),rl(),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:120,after:40},children:[new TextRun({text:"PERSONATA STUDIOS",bold:true,font:"Georgia",size:22,characterSpacing:200})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Every song has a story. We make sure yours is heard.",italics:true,font:"Georgia",size:20,color:"666666"})]}),
+                    new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"personatastudios.com",font:"Georgia",size:20,color:"999999"})]}));
+
+                const doc=new Document({styles:{default:{document:{run:{font:"Georgia",size:22}}}},sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:ch}]});
+                const blob=await Packer.toBlob(doc);
+                saveAs(blob,p.projectName?`Personata_Briefs_${p.projectName.replace(/[^a-zA-Z0-9]/g,'_')}.docx`:'Personata_Songwriter_Briefs.docx');
+                toast(`Exported ${SC} song brief${SC>1?'s':''}!`);
+            }
+
+            function resetAll(){if(!confirm('Clear everything and start over?'))return;SC=0;songs=[];proj={projectName:'',collectionType:'Demo Collection',eventDate:'',creativeDirector:''};CV='setup';navigateTo('setup');toast('All cleared.')}
+
+            function init(){navigateTo('setup')}
+
+            return {navigateTo, goNext, goPrev, pickSC, exportDocx, resetAll, init};
+        })();
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
