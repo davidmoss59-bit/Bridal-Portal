@@ -836,7 +836,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                     }
                     
                     posts = userProfile.posts || DEFAULT_POSTS;
-                    vendors = userProfile.vendors || [];
+                    vendors = []; // Always start fresh — vendors are searched live each session
                     socialAccounts = userProfile.socialAccounts || {};
                 }
                 
@@ -856,7 +856,6 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                 await db.collection('users').doc(currentUser.uid).set({
                     territory: territory,
                     posts: posts,
-                    vendors: vendors,
                     socialAccounts: socialAccounts,
                     email: currentUser.email,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1218,7 +1217,12 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                         ${v.email ? `<a class="vendor-link" href="mailto:${v.email}">✉️ Email</a>` : ''}
                     </div>
                 </div>
-            `).join('');
+            `).join('') + (currentSearchCategory ? `
+                <div style="grid-column:1/-1;text-align:center;padding:30px 0" id="loadMoreBtn">
+                    <button onclick="searchVendors(true)" style="padding:16px 48px;background:linear-gradient(135deg,#d4a574,#c49464);color:#0a0a12;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:1px;transition:all .3s">🔍 Load More</button>
+                    <p style="color:#666;font-size:12px;margin-top:10px">${vendors.filter(v=>v.category===currentSearchCategory).length} ${currentSearchCategory}s loaded</p>
+                </div>
+            ` : '');
         }
 
         async function toggleContacted(index) {
@@ -1234,39 +1238,67 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
         }
 
         // ==================== VENDOR SEARCH (with Web Search) ====================
-        async function searchVendors() {
-            const category = document.getElementById('vendorCategory').value;
+        let currentSearchCategory = '';
+        let searchPage = 0;
+        
+        async function searchVendors(loadMore = false) {
+            const category = loadMore ? currentSearchCategory : document.getElementById('vendorCategory').value;
             if (!category) {
                 toast('Please select a category first');
                 return;
             }
+            currentSearchCategory = category;
             
             const grid = document.getElementById('vendorGrid');
-            grid.innerHTML = `
-                <div class="loading" style="grid-column:1/-1">
-                    <div class="spinner"></div>
-                    <div class="loading-text">Searching for ${category}s...</div>
-                    <div class="loading-sub">Searching real business listings via web search...</div>
-                </div>
-            `;
+            
+            if (!loadMore) {
+                searchPage = 0;
+                // Remove existing vendors of this category to start fresh
+                vendors = vendors.filter(v => v.category !== category);
+                grid.innerHTML = `
+                    <div class="loading" style="grid-column:1/-1">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Searching for ${category}s...</div>
+                        <div class="loading-sub">Finding vendors with contact info via web search (this may take a moment)...</div>
+                    </div>
+                `;
+            } else {
+                // Show loading at bottom
+                const loadBtn = document.getElementById('loadMoreBtn');
+                if (loadBtn) loadBtn.outerHTML = `
+                    <div class="loading" style="grid-column:1/-1" id="loadMoreLoading">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Loading more ${category}s...</div>
+                    </div>
+                `;
+            }
+            
+            searchPage++;
+            const existingNames = vendors.filter(v => v.category === category).map(v => v.name).join(', ');
             
             const prompt = `Search the web for ${category}s that serve the ${territory.zip} (${territory.stateName}) area within ${territory.radius} miles.
 
-Search WeddingWire, The Knot, Yelp, and Google Business listings for REAL vendors.
+Search WeddingWire, The Knot, Yelp, Google Business, and Facebook for REAL vendors.
 
-For EACH vendor, search for and provide:
-- Name (exact business name)
-- Address (city, state)  
-- Phone number (search their website or listing for it)
-- Website URL (search for their actual website)
-- Email address (check their website contact page, WeddingWire profile, or The Knot profile)
+${existingNames ? `IMPORTANT: I already have these vendors, do NOT repeat them:\n${existingNames}\n\nFind DIFFERENT vendors not in the list above.\n` : ''}
+For EACH vendor you find, I need ALL of the following:
+- name: exact business name
+- address: city, state
+- phone: search their website footer, Google listing, Yelp, WeddingWire for their phone number
+- website: their actual website URL
+- email: search their website "contact" page, WeddingWire profile, The Knot profile, Facebook "About" section. Many vendors list email on these platforms.
 
-IMPORTANT: Try hard to find the website and phone for every vendor. Most wedding vendors have websites listed on WeddingWire, The Knot, or Yelp. Search for "[vendor name] wedding [city]" to find their site. Do NOT fabricate data — only include what you actually find.
+CRITICAL EMAIL INSTRUCTIONS: 
+- Visit the vendor's website and look for email on Contact page, footer, or About page
+- Check their WeddingWire vendor profile — emails are often listed there
+- Check their The Knot vendor profile
+- Try searching "[vendor name] email" or "[vendor name] contact"
+- Many wedding vendors use info@, contact@, or bookings@ with their domain name
 
-Return ONLY a JSON array, no other text:
+Return ONLY a JSON array with at least 50 vendors, no other text:
 [{"name":"...", "address":"...", "phone":"...", "website":"...", "email":"..."}]
 
-Find at least 15-20 vendors if available.`;
+Use "" for any field you truly cannot find. Try to find at least 50 different vendors.`;
 
             try {
                 const response = await fetch(OPENAI_PROXY_URL, {
@@ -1280,16 +1312,15 @@ Find at least 15-20 vendors if available.`;
                             search_context_size: 'high'
                         },
                         messages: [
-                            {role: 'system', content: 'You are a research assistant that finds real wedding vendors using web search. You MUST use web search to find actual businesses. Return only valid JSON arrays with no markdown formatting. Search aggressively for each vendor\'s website, phone, and email — check WeddingWire, The Knot, Yelp, and their own websites. Use empty string "" only if you truly cannot find the data after searching.'},
+                            {role: 'system', content: 'You are a research assistant that finds real wedding vendors using web search. You MUST use web search to find actual businesses with their contact details. Return only valid JSON arrays with no markdown formatting. Search aggressively for website, phone, AND email for every vendor. Check WeddingWire profiles, The Knot profiles, vendor websites, Yelp, and Facebook pages. Most wedding vendors have publicly listed emails on their profiles or websites.'},
                             {role: 'user', content: prompt}
                         ],
-                        max_tokens: 4000
+                        max_tokens: 8000
                     })
                 });
                 
                 if (!response.ok) {
                     const err = await response.json();
-                    // If search model not available, fall back to regular model with strong instructions
                     if (err.error?.code === 'model_not_found' || err.error?.message?.includes('not found')) {
                         return searchVendorsFallback(category);
                     }
@@ -1299,10 +1330,7 @@ Find at least 15-20 vendors if available.`;
                 const data = await response.json();
                 let content = data.choices[0].message.content.trim();
                 
-                // Clean up response - remove markdown if present
                 content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                
-                // Try to extract JSON array if there's surrounding text
                 const jsonMatch = content.match(/\[[\s\S]*\]/);
                 if (jsonMatch) content = jsonMatch[0];
                 
@@ -1318,41 +1346,48 @@ Find at least 15-20 vendors if available.`;
                     throw new Error('Invalid response format');
                 }
                 
-                // Add category to each vendor
                 newVendors = newVendors.map(v => ({
                     ...v,
                     type: category.replace('wedding ', ''),
                     category: category
                 }));
                 
-                // Add to existing vendors (avoid duplicates by name)
-                const existingNames = new Set(vendors.map(v => v.name.toLowerCase()));
+                const existingSet = new Set(vendors.map(v => v.name.toLowerCase()));
+                let added = 0;
                 newVendors.forEach(v => {
-                    if (!existingNames.has(v.name.toLowerCase())) {
+                    if (!existingSet.has(v.name.toLowerCase())) {
                         vendors.push(v);
-                        existingNames.add(v.name.toLowerCase());
+                        existingSet.add(v.name.toLowerCase());
+                        added++;
                     }
                 });
+                
+                const totalInCategory = vendors.filter(v => v.category === category).length;
                 
                 await saveUserData();
                 renderVendors();
                 renderStats();
-                toast(`Found ${newVendors.length} ${category}s! Searching for emails...`);
+                toast(`Found ${added} ${category}s (${totalInCategory} total)! Searching for emails...`);
                 
-                // SECOND PASS: Enrich with emails for vendors missing them
-                const needsEmail = newVendors.filter(v => !v.email);
-                if (needsEmail.length > 0) {
-                    enrichVendorEmails(needsEmail, category);
+                // Email lookup pass — focused search for contact emails
+                const vendorsNeedingEmail = vendors.filter(v => v.category === category && !v.email);
+                if (vendorsNeedingEmail.length > 0) {
+                    await findVendorEmails(vendorsNeedingEmail);
                 }
                 
             } catch (error) {
                 console.error('Vendor search error:', error);
-                grid.innerHTML = `
-                    <div class="error-box" style="grid-column:1/-1">
-                        <strong>Search Error:</strong> ${error.message}<br><br>
-                        Please try again.
-                    </div>
-                `;
+                if (!loadMore) {
+                    grid.innerHTML = `
+                        <div class="error-box" style="grid-column:1/-1">
+                            <strong>Search Error:</strong> ${error.message}<br><br>
+                            Please try again.
+                        </div>
+                    `;
+                } else {
+                    const loadEl = document.getElementById('loadMoreLoading');
+                    if (loadEl) loadEl.outerHTML = `<div class="error-box" style="grid-column:1/-1">Error loading more: ${error.message}</div>`;
+                }
             }
         }
 
@@ -1371,11 +1406,11 @@ Find at least 15-20 vendors if available.`;
 
 For each vendor provide:
 - Name, Address (city, state), Phone, Website, Email
-- Try to include website and phone for every vendor
+- Try to include website, phone, AND email for every vendor
 - Do NOT fabricate data — only include what you're confident about
 - Use "" for fields you're unsure of
 
-Return as JSON array only:
+Return as JSON array with at least 25 vendors:
 [{"name":"...", "address":"...", "phone":"...", "website":"...", "email":"..."}]`;
 
             try {
@@ -1385,10 +1420,10 @@ Return as JSON array only:
                     body: JSON.stringify({
                         model: 'gpt-4o-mini',
                         messages: [
-                            {role: 'system', content: 'You find real wedding vendors. CRITICAL: Never fabricate phone numbers or websites. If unsure, leave those fields as empty strings "". Only include businesses you are confident exist. Return only valid JSON arrays.'},
+                            {role: 'system', content: 'You find real wedding vendors. Include website, phone, and email for each. Return only valid JSON arrays.'},
                             {role: 'user', content: prompt}
                         ],
-                        max_tokens: 4000,
+                        max_tokens: 8000,
                         temperature: 0.1
                     })
                 });
@@ -1421,40 +1456,24 @@ Return as JSON array only:
                 await saveUserData();
                 renderVendors();
                 renderStats();
-                toast(`Found ${newVendors.length} ${category}s! (Note: verify contact info via Google links)`);
+                toast(`Found ${newVendors.length} ${category}s!`);
             } catch (error) {
                 console.error('Fallback search error:', error);
                 grid.innerHTML = `<div class="error-box" style="grid-column:1/-1"><strong>Search Error:</strong> ${error.message}</div>`;
             }
         }
 
-        // Email enrichment - second pass to find emails for vendors
-        async function enrichVendorEmails(vendorList, category) {
-            // Process in batches of 5 to avoid huge prompts
-            const batchSize = 5;
-            let enriched = 0;
+        // Focused email finder — processes vendors in batches
+        async function findVendorEmails(vendorList) {
+            const batchSize = 10;
+            let totalFound = 0;
             
             for (let i = 0; i < vendorList.length; i += batchSize) {
                 const batch = vendorList.slice(i, i + batchSize);
-                const vendorNames = batch.map(v => `- ${v.name} (${v.address || ''})${v.website ? ' — website: ' + v.website : ''}`).join('\n');
+                const vendorLines = batch.map(v => 
+                    `${v.name} | ${v.address || ''} | website: ${v.website || 'unknown'}`
+                ).join('\n');
                 
-                const prompt = `Search the web for contact email addresses for these ${category}s:
-
-${vendorNames}
-
-For each vendor, search:
-1. Their website contact page or footer
-2. Their WeddingWire profile
-3. Their The Knot profile  
-4. Their Yelp listing
-5. Their Facebook page About section
-6. Google search "[vendor name] email contact"
-
-Return ONLY a JSON array with name and email found:
-[{"name":"exact vendor name", "email":"found@email.com"}]
-
-Only include vendors where you actually found an email. Skip any where you couldn't find one. Return [] if none found.`;
-
                 try {
                     const response = await fetch(OPENAI_PROXY_URL, {
                         method: 'POST',
@@ -1463,8 +1482,8 @@ Only include vendors where you actually found an email. Skip any where you could
                             model: 'gpt-4o-search-preview',
                             web_search_options: { search_context_size: 'high' },
                             messages: [
-                                {role: 'system', content: 'You find email addresses for businesses by searching their websites and online profiles. Return only valid JSON arrays. Only include emails you actually found — never guess or fabricate email addresses.'},
-                                {role: 'user', content: prompt}
+                                {role: 'system', content: 'You find email addresses for wedding vendors by searching the web. For each vendor, search their website contact/about page, WeddingWire profile, The Knot profile, Yelp page, and Facebook page. Return valid JSON only.'},
+                                {role: 'user', content: `Find the contact email address for each of these wedding vendors. Search their websites and online profiles.\n\n${vendorLines}\n\nReturn JSON array:\n[{"name":"exact name","email":"found@email.com"}]\n\nOnly include vendors where you found an email. Return [] if none found.`}
                             ],
                             max_tokens: 2000
                         })
@@ -1478,30 +1497,28 @@ Only include vendors where you actually found an email. Skip any where you could
                     const jsonMatch = content.match(/\[[\s\S]*\]/);
                     if (jsonMatch) content = jsonMatch[0];
                     
-                    const emailResults = JSON.parse(content);
-                    if (Array.isArray(emailResults)) {
-                        emailResults.forEach(result => {
-                            if (result.email) {
-                                const vendor = vendors.find(v => v.name.toLowerCase() === result.name.toLowerCase());
-                                if (vendor) {
-                                    vendor.email = result.email;
-                                    enriched++;
+                    const results = JSON.parse(content);
+                    if (Array.isArray(results)) {
+                        results.forEach(r => {
+                            if (r.email && r.email.includes('@')) {
+                                const v = vendors.find(v => v.name.toLowerCase() === r.name.toLowerCase());
+                                if (v && !v.email) {
+                                    v.email = r.email;
+                                    totalFound++;
                                 }
                             }
                         });
                     }
                 } catch (e) {
-                    console.error('Email enrichment batch error:', e);
+                    console.error('Email batch error:', e);
                 }
             }
             
-            if (enriched > 0) {
+            if (totalFound > 0) {
                 await saveUserData();
                 renderVendors();
-                toast(`Found ${enriched} email${enriched > 1 ? 's' : ''}!`);
-            } else {
-                toast('Email search complete — no additional emails found');
             }
+            toast(totalFound > 0 ? `Found ${totalFound} email${totalFound > 1 ? 's' : ''}!` : 'Email search complete');
         }
 
         // ==================== SOCIAL ACCOUNTS ====================
