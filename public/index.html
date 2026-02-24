@@ -1239,7 +1239,6 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
 
         // ==================== VENDOR SEARCH (with Web Search) ====================
         let currentSearchCategory = '';
-        let searchPage = 0;
         
         async function searchVendors(loadMore = false) {
             const category = loadMore ? currentSearchCategory : document.getElementById('vendorCategory').value;
@@ -1252,18 +1251,15 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             const grid = document.getElementById('vendorGrid');
             
             if (!loadMore) {
-                searchPage = 0;
-                // Remove existing vendors of this category to start fresh
                 vendors = vendors.filter(v => v.category !== category);
                 grid.innerHTML = `
                     <div class="loading" style="grid-column:1/-1">
                         <div class="spinner"></div>
                         <div class="loading-text">Searching for ${category}s...</div>
-                        <div class="loading-sub">Finding vendors with contact info via web search (this may take a moment)...</div>
+                        <div class="loading-sub">Finding vendors with contact info (this may take a moment)...</div>
                     </div>
                 `;
             } else {
-                // Show loading at bottom
                 const loadBtn = document.getElementById('loadMoreBtn');
                 if (loadBtn) loadBtn.outerHTML = `
                     <div class="loading" style="grid-column:1/-1" id="loadMoreLoading">
@@ -1273,194 +1269,143 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                 `;
             }
             
-            searchPage++;
-            const existingNames = vendors.filter(v => v.category === category).map(v => v.name).join(', ');
+            const existingNames = vendors.filter(v => v.category === category).map(v => v.name);
+            const excludeText = existingNames.length > 0 ? `\nDo NOT include these vendors I already have: ${existingNames.join(', ')}\n` : '';
             
-            const prompt = `Search the web for ${category}s that serve the ${territory.zip} (${territory.stateName}) area within ${territory.radius} miles.
+            const prompt = `Find ${category}s near ${territory.zip} (${territory.stateName}) within ${territory.radius} miles.
+${excludeText}
+For each vendor provide name, address (city, state), phone, website URL, and email.
+Search WeddingWire, The Knot, Yelp, Google for real vendors.
+Return as JSON array: [{"name":"...","address":"...","phone":"...","website":"...","email":"..."}]
+Find at least 30 vendors. Use "" for unknown fields.`;
 
-Search WeddingWire, The Knot, Yelp, Google Business, and Facebook for REAL vendors.
-
-${existingNames ? `IMPORTANT: I already have these vendors, do NOT repeat them:\n${existingNames}\n\nFind DIFFERENT vendors not in the list above.\n` : ''}
-For EACH vendor you find, I need ALL of the following:
-- name: exact business name
-- address: city, state
-- phone: search their website footer, Google listing, Yelp, WeddingWire for their phone number
-- website: their actual website URL
-- email: search their website "contact" page, WeddingWire profile, The Knot profile, Facebook "About" section. Many vendors list email on these platforms.
-
-CRITICAL EMAIL INSTRUCTIONS: 
-- Visit the vendor's website and look for email on Contact page, footer, or About page
-- Check their WeddingWire vendor profile — emails are often listed there
-- Check their The Knot vendor profile
-- Try searching "[vendor name] email" or "[vendor name] contact"
-- Many wedding vendors use info@, contact@, or bookings@ with their domain name
-
-Return ONLY a JSON array with at least 50 vendors, no other text:
-[{"name":"...", "address":"...", "phone":"...", "website":"...", "email":"..."}]
-
-Use "" for any field you truly cannot find. Try to find at least 50 different vendors.`;
-
+            let newVendors = null;
+            
+            // Try search model first
             try {
-                const response = await fetch(OPENAI_PROXY_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-4o-search-preview',
-                        web_search_options: {
-                            search_context_size: 'high'
-                        },
-                        messages: [
-                            {role: 'system', content: 'You are a research assistant that finds real wedding vendors using web search. You MUST use web search to find actual businesses with their contact details. Return only valid JSON arrays with no markdown formatting. Search aggressively for website, phone, AND email for every vendor. Check WeddingWire profiles, The Knot profiles, vendor websites, Yelp, and Facebook pages. Most wedding vendors have publicly listed emails on their profiles or websites.'},
-                            {role: 'user', content: prompt}
-                        ],
-                        max_tokens: 8000
-                    })
-                });
-                
-                if (!response.ok) {
-                    const err = await response.json();
-                    if (err.error?.code === 'model_not_found' || err.error?.message?.includes('not found')) {
-                        return searchVendorsFallback(category);
-                    }
-                    throw new Error(err.error?.message || 'API request failed');
-                }
-                
-                const data = await response.json();
-                let content = data.choices[0].message.content.trim();
-                
-                content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                const jsonMatch = content.match(/\[[\s\S]*\]/);
-                if (jsonMatch) content = jsonMatch[0];
-                
-                let newVendors;
+                newVendors = await callVendorAPI('gpt-4o-search-preview', prompt, true);
+            } catch (e) {
+                console.log('Search model failed, trying fallback:', e.message);
+            }
+            
+            // Fallback to gpt-4o-mini
+            if (!newVendors) {
                 try {
-                    newVendors = JSON.parse(content);
-                } catch (parseError) {
-                    console.error('Parse error:', parseError, 'Content:', content);
-                    throw new Error('Failed to parse vendor data');
+                    newVendors = await callVendorAPI('gpt-4o-mini', prompt, false);
+                } catch (e) {
+                    console.log('Fallback also failed:', e.message);
                 }
-                
-                if (!Array.isArray(newVendors)) {
-                    throw new Error('Invalid response format');
-                }
-                
-                newVendors = newVendors.map(v => ({
-                    ...v,
-                    type: category.replace('wedding ', ''),
-                    category: category
-                }));
-                
-                const existingSet = new Set(vendors.map(v => v.name.toLowerCase()));
-                let added = 0;
-                newVendors.forEach(v => {
-                    if (!existingSet.has(v.name.toLowerCase())) {
-                        vendors.push(v);
-                        existingSet.add(v.name.toLowerCase());
-                        added++;
-                    }
-                });
-                
-                const totalInCategory = vendors.filter(v => v.category === category).length;
-                
-                await saveUserData();
-                renderVendors();
-                renderStats();
-                toast(`Found ${added} ${category}s (${totalInCategory} total)! Searching for emails...`);
-                
-                // Email lookup pass — focused search for contact emails
-                const vendorsNeedingEmail = vendors.filter(v => v.category === category && !v.email);
-                if (vendorsNeedingEmail.length > 0) {
-                    await findVendorEmails(vendorsNeedingEmail);
-                }
-                
-            } catch (error) {
-                console.error('Vendor search error:', error);
+            }
+            
+            if (!newVendors || newVendors.length === 0) {
                 if (!loadMore) {
-                    grid.innerHTML = `
-                        <div class="error-box" style="grid-column:1/-1">
-                            <strong>Search Error:</strong> ${error.message}<br><br>
-                            Please try again.
-                        </div>
-                    `;
-                } else {
-                    const loadEl = document.getElementById('loadMoreLoading');
-                    if (loadEl) loadEl.outerHTML = `<div class="error-box" style="grid-column:1/-1">Error loading more: ${error.message}</div>`;
+                    grid.innerHTML = `<div class="error-box" style="grid-column:1/-1"><strong>No vendors found.</strong> Try a different category or expand your search radius.</div>`;
                 }
+                return;
+            }
+            
+            newVendors = newVendors.map(v => ({
+                ...v,
+                type: category.replace('wedding ', ''),
+                category: category
+            }));
+            
+            const existingSet = new Set(vendors.map(v => v.name.toLowerCase()));
+            let added = 0;
+            newVendors.forEach(v => {
+                if (v.name && !existingSet.has(v.name.toLowerCase())) {
+                    vendors.push(v);
+                    existingSet.add(v.name.toLowerCase());
+                    added++;
+                }
+            });
+            
+            renderVendors();
+            renderStats();
+            
+            const total = vendors.filter(v => v.category === category).length;
+            toast(`Found ${added} ${category}s (${total} total)`);
+            
+            // Email enrichment for vendors missing email
+            const needEmail = vendors.filter(v => v.category === category && !v.email);
+            if (needEmail.length > 0) {
+                toast('Searching for emails...');
+                await findVendorEmails(needEmail);
             }
         }
-
-        // Fallback if search model not available
-        async function searchVendorsFallback(category) {
-            const grid = document.getElementById('vendorGrid');
-            grid.innerHTML = `
-                <div class="loading" style="grid-column:1/-1">
-                    <div class="spinner"></div>
-                    <div class="loading-text">Searching for ${category}s (fallback)...</div>
-                    <div class="loading-sub">Finding vendors in your area...</div>
-                </div>
-            `;
-            
-            const prompt = `I need REAL, currently operating ${category}s near ${territory.zip} (${territory.stateName}) within ${territory.radius} miles.
-
-For each vendor provide:
-- Name, Address (city, state), Phone, Website, Email
-- Try to include website, phone, AND email for every vendor
-- Do NOT fabricate data — only include what you're confident about
-- Use "" for fields you're unsure of
-
-Return as JSON array with at least 25 vendors:
-[{"name":"...", "address":"...", "phone":"...", "website":"...", "email":"..."}]`;
-
-            try {
-                const response = await fetch(OPENAI_PROXY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: 'gpt-4o-mini',
-                        messages: [
-                            {role: 'system', content: 'You find real wedding vendors. Include website, phone, and email for each. Return only valid JSON arrays.'},
-                            {role: 'user', content: prompt}
-                        ],
-                        max_tokens: 8000,
-                        temperature: 0.1
-                    })
-                });
-                
-                if (!response.ok) throw new Error('API request failed');
-                
-                const data = await response.json();
-                let content = data.choices[0].message.content.trim();
-                content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                const jsonMatch = content.match(/\[[\s\S]*\]/);
-                if (jsonMatch) content = jsonMatch[0];
-                
-                let newVendors = JSON.parse(content);
-                if (!Array.isArray(newVendors)) throw new Error('Invalid format');
-                
-                newVendors = newVendors.map(v => ({
-                    ...v,
-                    type: category.replace('wedding ', ''),
-                    category: category
-                }));
-                
-                const existingNames = new Set(vendors.map(v => v.name.toLowerCase()));
-                newVendors.forEach(v => {
-                    if (!existingNames.has(v.name.toLowerCase())) {
-                        vendors.push(v);
-                        existingNames.add(v.name.toLowerCase());
-                    }
-                });
-                
-                await saveUserData();
-                renderVendors();
-                renderStats();
-                toast(`Found ${newVendors.length} ${category}s!`);
-            } catch (error) {
-                console.error('Fallback search error:', error);
-                grid.innerHTML = `<div class="error-box" style="grid-column:1/-1"><strong>Search Error:</strong> ${error.message}</div>`;
+        
+        // Unified API call with robust JSON parsing
+        async function callVendorAPI(model, prompt, useSearch) {
+            const body = {
+                model: model,
+                messages: [
+                    {role: 'system', content: 'Find real wedding vendors. Return ONLY a JSON array. No markdown, no commentary, no explanation — just the JSON array.'},
+                    {role: 'user', content: prompt}
+                ],
+                max_tokens: 8000
+            };
+            if (useSearch) {
+                body.web_search_options = { search_context_size: 'high' };
+            } else {
+                body.temperature = 0.1;
             }
+            
+            const response = await fetch(OPENAI_PROXY_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error?.message || `API error ${response.status}`);
+            }
+            
+            const data = await response.json();
+            let content = data.choices?.[0]?.message?.content || '';
+            
+            return parseVendorJSON(content);
+        }
+        
+        // Robust JSON parser that handles messy AI responses
+        function parseVendorJSON(content) {
+            content = content.trim();
+            
+            // Strip markdown code blocks
+            content = content.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+            
+            // Try direct parse first
+            try {
+                const parsed = JSON.parse(content);
+                if (Array.isArray(parsed)) return parsed;
+            } catch (e) {}
+            
+            // Try extracting JSON array from surrounding text
+            const arrayMatch = content.match(/\[\s*\{[\s\S]*\}\s*\]/);
+            if (arrayMatch) {
+                try {
+                    const parsed = JSON.parse(arrayMatch[0]);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {}
+            }
+            
+            // Try fixing common issues: trailing commas, missing brackets
+            let cleaned = content;
+            // Find the first [ and last ]
+            const firstBracket = cleaned.indexOf('[');
+            const lastBracket = cleaned.lastIndexOf(']');
+            if (firstBracket !== -1 && lastBracket > firstBracket) {
+                cleaned = cleaned.substring(firstBracket, lastBracket + 1);
+                // Remove trailing commas before ]
+                cleaned = cleaned.replace(/,\s*\]/g, ']').replace(/,\s*\}/g, '}');
+                try {
+                    const parsed = JSON.parse(cleaned);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {}
+            }
+            
+            console.error('Could not parse vendor response:', content.substring(0, 500));
+            throw new Error('Failed to parse vendor data');
         }
 
         // Focused email finder — processes vendors in batches
