@@ -438,7 +438,7 @@
             <div class="tab-content" id="vendors">
                 <h2 class="section-title">Local Wedding Vendors <span class="vendor-count" id="vendorCount">0</span></h2>
                 <div class="info-box">
-                    <strong>🤖 Powered by ChatGPT Search</strong> — Real vendor data from Yelp, WeddingWire, The Knot, and Google. 
+                    <strong>🤖 Powered by AI Web Search</strong> — Real vendor data verified through web search of Yelp, WeddingWire, The Knot, and Google. 
                     Click a category to search for vendors in your area.
                 </div>
                 <div class="vendor-controls">
@@ -481,7 +481,7 @@
                         <div class="ai-icon" style="background: linear-gradient(135deg, #8fd4a8, #5cb87a);">🎯</div>
                         <div>
                             <div class="ai-title" style="color: #8fd4a8;">Sales Benefits by Market</div>
-                            <div class="ai-subtitle">Learn how to pitch Personata to each vendor type</div>
+                            <div class="ai-subtitle">Learn how to pitch Personata Studios to each vendor type</div>
                         </div>
                     </div>
                     <div class="vendor-controls" style="margin-bottom:15px">
@@ -499,7 +499,7 @@
                         <button id="generateBenefitsBtn">🎯 Show Benefits & Pitch</button>
                     </div>
                     <div class="output-box" id="benefitsOutputBox">
-                        <p style="text-align:center;color:#666;padding:30px">Select a vendor type to see why they should partner with Personata and how to pitch them</p>
+                        <p style="text-align:center;color:#666;padding:30px">Select a vendor type to see why they should partner with Personata Studios and how to pitch them</p>
                     </div>
                 </div>
 
@@ -801,7 +801,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             if (territory?.zip) {
                 document.getElementById('territoryInfo').classList.add('show');
                 document.getElementById('territoryName').textContent = territory.stateName || '';
-                document.getElementById('territoryDetail').textContent = 'Real vendors via ChatGPT search';
+                document.getElementById('territoryDetail').textContent = 'Real vendors via AI web search';
                 document.getElementById('setupBtn').disabled = false;
             }
             document.getElementById('profileModal').style.display = 'flex';
@@ -1022,7 +1022,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                 const state = ZIP_STATE[zip.slice(0,3)];
                 if (state && STATES[state]) {
                     document.getElementById('territoryName').textContent = STATES[state];
-                    document.getElementById('territoryDetail').textContent = 'Real vendors via ChatGPT search';
+                    document.getElementById('territoryDetail').textContent = 'Real vendors via AI web search';
                     document.getElementById('territoryInfo').classList.add('show');
                     document.getElementById('setupBtn').disabled = false;
                     return;
@@ -1231,7 +1231,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             toast(vendors[index].contacted ? 'Marked as contacted!' : 'Unmarked');
         }
 
-        // ==================== CHATGPT VENDOR SEARCH ====================
+        // ==================== VENDOR SEARCH (with Web Search) ====================
         async function searchVendors() {
             const category = document.getElementById('vendorCategory').value;
             if (!category) {
@@ -1244,45 +1244,52 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                 <div class="loading" style="grid-column:1/-1">
                     <div class="spinner"></div>
                     <div class="loading-text">Searching for ${category}s...</div>
-                    <div class="loading-sub">Using ChatGPT to search Yelp, WeddingWire, The Knot, and more</div>
+                    <div class="loading-sub">Searching real business listings via web search...</div>
                 </div>
             `;
             
-            const prompt = `List all ${category}s that serve the ${territory.zip} (${territory.stateName}) area within ${territory.radius} miles. 
+            const prompt = `Search the web for ${category}s that serve the ${territory.zip} (${territory.stateName}) area within ${territory.radius} miles.
 
-Include vendors from nearby cities and counties.
+Search WeddingWire, The Knot, Yelp, and Google Business listings for REAL vendors with VERIFIED contact information.
 
-For EACH vendor, provide:
-- Name
-- Address (city, state)
-- Phone number (if available)
-- Website (if available)
+For EACH vendor you find, provide:
+- Name (exact business name)
+- Address (city, state)  
+- Phone number (only if you found it on their actual listing — do NOT guess or fabricate)
+- Website URL (only if you found their actual website — do NOT guess or fabricate)
 
-Format as JSON array:
+CRITICAL: Only include vendors you can verify actually exist. Do NOT make up or guess any phone numbers or websites. If you cannot find a phone number or website, leave those fields as empty strings.
+
+Return ONLY a JSON array, no other text:
 [{"name":"...", "address":"...", "phone":"...", "website":"..."}]
 
-Search Yelp, WeddingWire, The Knot, Google Business listings. Include at least 20-30 vendors if available. Only return the JSON array, no other text.`;
+Find at least 15-20 vendors if available.`;
 
             try {
                 const response = await fetch(OPENAI_PROXY_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
-                        
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4o-mini',
+                        model: 'gpt-4o-search-preview',
+                        web_search_options: {
+                            search_context_size: 'high'
+                        },
                         messages: [
-                            {role: 'system', content: 'You are a helpful assistant that searches for wedding vendors. Return only valid JSON arrays with no markdown formatting.'},
+                            {role: 'system', content: 'You are a research assistant that finds real wedding vendors using web search. You MUST use web search to find actual businesses. Return only valid JSON arrays with no markdown formatting. NEVER fabricate or guess phone numbers or websites — only include data you found in real search results.'},
                             {role: 'user', content: prompt}
                         ],
-                        max_tokens: 4000,
-                        temperature: 0.3
+                        max_tokens: 4000
                     })
                 });
                 
                 if (!response.ok) {
                     const err = await response.json();
+                    // If search model not available, fall back to regular model with strong instructions
+                    if (err.error?.code === 'model_not_found' || err.error?.message?.includes('not found')) {
+                        return searchVendorsFallback(category);
+                    }
                     throw new Error(err.error?.message || 'API request failed');
                 }
                 
@@ -1291,6 +1298,10 @@ Search Yelp, WeddingWire, The Knot, Google Business listings. Include at least 2
                 
                 // Clean up response - remove markdown if present
                 content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                
+                // Try to extract JSON array if there's surrounding text
+                const jsonMatch = content.match(/\[[\s\S]*\]/);
+                if (jsonMatch) content = jsonMatch[0];
                 
                 let newVendors;
                 try {
@@ -1330,9 +1341,82 @@ Search Yelp, WeddingWire, The Knot, Google Business listings. Include at least 2
                 grid.innerHTML = `
                     <div class="error-box" style="grid-column:1/-1">
                         <strong>Search Error:</strong> ${error.message}<br><br>
-                        Please try again or check your API key.
+                        Please try again.
                     </div>
                 `;
+            }
+        }
+
+        // Fallback if search model not available
+        async function searchVendorsFallback(category) {
+            const grid = document.getElementById('vendorGrid');
+            grid.innerHTML = `
+                <div class="loading" style="grid-column:1/-1">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Searching for ${category}s (fallback)...</div>
+                    <div class="loading-sub">Finding vendors in your area...</div>
+                </div>
+            `;
+            
+            const prompt = `I need REAL, currently operating ${category}s near ${territory.zip} (${territory.stateName}) within ${territory.radius} miles.
+
+IMPORTANT RULES:
+- Only list businesses you are CONFIDENT actually exist
+- For phone numbers: ONLY include if you are certain of the number. Otherwise use ""
+- For websites: ONLY include if you are certain of the URL. Otherwise use ""
+- It is better to return fewer vendors with accurate info than many with fabricated data
+- Do NOT make up business names, phone numbers, or websites
+
+Return as JSON array only:
+[{"name":"...", "address":"...", "phone":"...", "website":"..."}]`;
+
+            try {
+                const response = await fetch(OPENAI_PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            {role: 'system', content: 'You find real wedding vendors. CRITICAL: Never fabricate phone numbers or websites. If unsure, leave those fields as empty strings "". Only include businesses you are confident exist. Return only valid JSON arrays.'},
+                            {role: 'user', content: prompt}
+                        ],
+                        max_tokens: 4000,
+                        temperature: 0.1
+                    })
+                });
+                
+                if (!response.ok) throw new Error('API request failed');
+                
+                const data = await response.json();
+                let content = data.choices[0].message.content.trim();
+                content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                const jsonMatch = content.match(/\[[\s\S]*\]/);
+                if (jsonMatch) content = jsonMatch[0];
+                
+                let newVendors = JSON.parse(content);
+                if (!Array.isArray(newVendors)) throw new Error('Invalid format');
+                
+                newVendors = newVendors.map(v => ({
+                    ...v,
+                    type: category.replace('wedding ', ''),
+                    category: category
+                }));
+                
+                const existingNames = new Set(vendors.map(v => v.name.toLowerCase()));
+                newVendors.forEach(v => {
+                    if (!existingNames.has(v.name.toLowerCase())) {
+                        vendors.push(v);
+                        existingNames.add(v.name.toLowerCase());
+                    }
+                });
+                
+                await saveUserData();
+                renderVendors();
+                renderStats();
+                toast(`Found ${newVendors.length} ${category}s! (Note: verify contact info via Google links)`);
+            } catch (error) {
+                console.error('Fallback search error:', error);
+                grid.innerHTML = `<div class="error-box" style="grid-column:1/-1"><strong>Search Error:</strong> ${error.message}</div>`;
             }
         }
 
@@ -1631,7 +1715,7 @@ Personata Studios creates custom, original wedding songs through a conversation-
 Create a comprehensive sales training guide specifically for pitching to a ${vendorType}. Include:
 
 1. WHY THEY SHOULD CARE (3-4 specific benefits for a ${vendorType})
-- How does partnering with Personata help THEIR business?
+- How does partnering with Personata Studios help THEIR business?
 - What problems does it solve for their clients?
 - How does it make them look good?
 
@@ -1969,7 +2053,7 @@ ${allH}
                     new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:200,after:120},children:[new TextRun({text:`${SC} Song${SC>1?'s':''}. ${SC} Voice${SC>1?'s':''}. One ${p.projectName?p.projectName.split(' ').pop():'Story'}.`,font:"Georgia",size:24})]}),
                     new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Each persona is a real person with a real story.",font:"Georgia",size:22,color:"666666"})]}),
                     new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:120},children:[new TextRun({text:"Each point is a moment that only emerged because someone listened.",italics:true,font:"Georgia",size:22,color:"666666"})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"That\u2019s the Personata difference.",italics:true,font:"Georgia",size:22,color:"999999"})]}),rl(),
+                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"That\u2019s the Personata Studios difference.",italics:true,font:"Georgia",size:22,color:"999999"})]}),rl(),
                     new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:120,after:40},children:[new TextRun({text:"PERSONATA STUDIOS",bold:true,font:"Georgia",size:22,characterSpacing:200})]}),
                     new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Every song has a story. We make sure yours is heard.",italics:true,font:"Georgia",size:20,color:"666666"})]}),
                     new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"personatastudios.com",font:"Georgia",size:20,color:"999999"})]}));
