@@ -1337,7 +1337,13 @@ Find at least 15-20 vendors if available.`;
                 await saveUserData();
                 renderVendors();
                 renderStats();
-                toast(`Found ${newVendors.length} ${category}s!`);
+                toast(`Found ${newVendors.length} ${category}s! Searching for emails...`);
+                
+                // SECOND PASS: Enrich with emails for vendors missing them
+                const needsEmail = newVendors.filter(v => !v.email);
+                if (needsEmail.length > 0) {
+                    enrichVendorEmails(needsEmail, category);
+                }
                 
             } catch (error) {
                 console.error('Vendor search error:', error);
@@ -1419,6 +1425,82 @@ Return as JSON array only:
             } catch (error) {
                 console.error('Fallback search error:', error);
                 grid.innerHTML = `<div class="error-box" style="grid-column:1/-1"><strong>Search Error:</strong> ${error.message}</div>`;
+            }
+        }
+
+        // Email enrichment - second pass to find emails for vendors
+        async function enrichVendorEmails(vendorList, category) {
+            // Process in batches of 5 to avoid huge prompts
+            const batchSize = 5;
+            let enriched = 0;
+            
+            for (let i = 0; i < vendorList.length; i += batchSize) {
+                const batch = vendorList.slice(i, i + batchSize);
+                const vendorNames = batch.map(v => `- ${v.name} (${v.address || ''})${v.website ? ' — website: ' + v.website : ''}`).join('\n');
+                
+                const prompt = `Search the web for contact email addresses for these ${category}s:
+
+${vendorNames}
+
+For each vendor, search:
+1. Their website contact page or footer
+2. Their WeddingWire profile
+3. Their The Knot profile  
+4. Their Yelp listing
+5. Their Facebook page About section
+6. Google search "[vendor name] email contact"
+
+Return ONLY a JSON array with name and email found:
+[{"name":"exact vendor name", "email":"found@email.com"}]
+
+Only include vendors where you actually found an email. Skip any where you couldn't find one. Return [] if none found.`;
+
+                try {
+                    const response = await fetch(OPENAI_PROXY_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: 'gpt-4o-search-preview',
+                            web_search_options: { search_context_size: 'high' },
+                            messages: [
+                                {role: 'system', content: 'You find email addresses for businesses by searching their websites and online profiles. Return only valid JSON arrays. Only include emails you actually found — never guess or fabricate email addresses.'},
+                                {role: 'user', content: prompt}
+                            ],
+                            max_tokens: 2000
+                        })
+                    });
+                    
+                    if (!response.ok) continue;
+                    
+                    const data = await response.json();
+                    let content = data.choices[0].message.content.trim();
+                    content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                    const jsonMatch = content.match(/\[[\s\S]*\]/);
+                    if (jsonMatch) content = jsonMatch[0];
+                    
+                    const emailResults = JSON.parse(content);
+                    if (Array.isArray(emailResults)) {
+                        emailResults.forEach(result => {
+                            if (result.email) {
+                                const vendor = vendors.find(v => v.name.toLowerCase() === result.name.toLowerCase());
+                                if (vendor) {
+                                    vendor.email = result.email;
+                                    enriched++;
+                                }
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('Email enrichment batch error:', e);
+                }
+            }
+            
+            if (enriched > 0) {
+                await saveUserData();
+                renderVendors();
+                toast(`Found ${enriched} email${enriched > 1 ? 's' : ''}!`);
+            } else {
+                toast('Email search complete — no additional emails found');
             }
         }
 
