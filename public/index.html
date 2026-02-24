@@ -985,7 +985,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             document.getElementById('nextFeatured').addEventListener('click', nextFeatured);
             document.getElementById('saveFeatured').addEventListener('click', saveFeatured);
             document.getElementById('generateTodayPost').addEventListener('click', generateTodayPost);
-            document.getElementById('searchVendorsBtn').addEventListener('click', searchVendors);
+            document.getElementById('searchVendorsBtn').addEventListener('click', () => searchVendors(false));
             document.getElementById('generateEmailBtn').addEventListener('click', generateEmailIntro);
             document.getElementById('generateBenefitsBtn').addEventListener('click', generateBenefits);
             
