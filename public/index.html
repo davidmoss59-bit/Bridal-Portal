@@ -1213,7 +1213,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                     ${v.contacted ? `<div class="contacted-date">📅 Contacted: ${new Date(v.contactedAt).toLocaleDateString()}</div>` : ''}
                     <div class="vendor-actions">
                         <a class="vendor-link" href="https://www.google.com/search?q=${encodeURIComponent(v.name + ' ' + (v.address || territory.stateName))}" target="_blank">🔍 Google</a>
-                        ${v.website ? `<a class="vendor-link" href="${v.website}" target="_blank">🌐 Website</a>` : ''}
+                        <a class="vendor-link" href="https://www.google.com/search?q=${encodeURIComponent('"' + v.name + '" ' + (v.address || territory.stateName) + ' official website')}" target="_blank" rel="noopener noreferrer">🌐 Website</a>
                         ${v.email ? `<a class="vendor-link" href="mailto:${v.email}">✉️ Email</a>` : ''}
                     </div>
                 </div>
