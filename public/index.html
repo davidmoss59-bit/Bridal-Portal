@@ -1209,11 +1209,13 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                     </div>
                     <div class="vendor-name">${esc(v.name)}</div>
                     <div class="vendor-address">${esc(v.address || '')}</div>
-                    ${v.phone ? `<div class="vendor-phone">📞 <a href="tel:${v.phone}">${v.phone}</a></div>` : ''}
+                    ${v.phone ? `<div class="vendor-phone">📞 <a href="tel:${v.phone}" style="color:#7dd3e8">${v.phone}</a></div>` : ''}
+                    ${v.email ? `<div class="vendor-phone">✉️ <a href="mailto:${v.email}" style="color:#7dd3e8">${v.email}</a></div>` : ''}
                     ${v.contacted ? `<div class="contacted-date">📅 Contacted: ${new Date(v.contactedAt).toLocaleDateString()}</div>` : ''}
                     <div class="vendor-actions">
                         <a class="vendor-link" href="https://www.google.com/search?q=${encodeURIComponent(v.name + ' ' + (v.address || territory.stateName))}" target="_blank">🔍 Google</a>
                         ${v.website ? `<a class="vendor-link" href="${v.website}" target="_blank">🌐 Website</a>` : ''}
+                        ${v.email ? `<a class="vendor-link" href="mailto:${v.email}">✉️ Email</a>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -1250,18 +1252,19 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             
             const prompt = `Search the web for ${category}s that serve the ${territory.zip} (${territory.stateName}) area within ${territory.radius} miles.
 
-Search WeddingWire, The Knot, Yelp, and Google Business listings for REAL vendors with VERIFIED contact information.
+Search WeddingWire, The Knot, Yelp, and Google Business listings for REAL vendors.
 
-For EACH vendor you find, provide:
+For EACH vendor, search for and provide:
 - Name (exact business name)
 - Address (city, state)  
-- Phone number (only if you found it on their actual listing — do NOT guess or fabricate)
-- Website URL (only if you found their actual website — do NOT guess or fabricate)
+- Phone number (search their website or listing for it)
+- Website URL (search for their actual website)
+- Email address (check their website contact page, WeddingWire profile, or The Knot profile)
 
-CRITICAL: Only include vendors you can verify actually exist. Do NOT make up or guess any phone numbers or websites. If you cannot find a phone number or website, leave those fields as empty strings.
+IMPORTANT: Try hard to find the website and phone for every vendor. Most wedding vendors have websites listed on WeddingWire, The Knot, or Yelp. Search for "[vendor name] wedding [city]" to find their site. Do NOT fabricate data — only include what you actually find.
 
 Return ONLY a JSON array, no other text:
-[{"name":"...", "address":"...", "phone":"...", "website":"..."}]
+[{"name":"...", "address":"...", "phone":"...", "website":"...", "email":"..."}]
 
 Find at least 15-20 vendors if available.`;
 
@@ -1277,7 +1280,7 @@ Find at least 15-20 vendors if available.`;
                             search_context_size: 'high'
                         },
                         messages: [
-                            {role: 'system', content: 'You are a research assistant that finds real wedding vendors using web search. You MUST use web search to find actual businesses. Return only valid JSON arrays with no markdown formatting. NEVER fabricate or guess phone numbers or websites — only include data you found in real search results.'},
+                            {role: 'system', content: 'You are a research assistant that finds real wedding vendors using web search. You MUST use web search to find actual businesses. Return only valid JSON arrays with no markdown formatting. Search aggressively for each vendor\'s website, phone, and email — check WeddingWire, The Knot, Yelp, and their own websites. Use empty string "" only if you truly cannot find the data after searching.'},
                             {role: 'user', content: prompt}
                         ],
                         max_tokens: 4000
@@ -1360,15 +1363,14 @@ Find at least 15-20 vendors if available.`;
             
             const prompt = `I need REAL, currently operating ${category}s near ${territory.zip} (${territory.stateName}) within ${territory.radius} miles.
 
-IMPORTANT RULES:
-- Only list businesses you are CONFIDENT actually exist
-- For phone numbers: ONLY include if you are certain of the number. Otherwise use ""
-- For websites: ONLY include if you are certain of the URL. Otherwise use ""
-- It is better to return fewer vendors with accurate info than many with fabricated data
-- Do NOT make up business names, phone numbers, or websites
+For each vendor provide:
+- Name, Address (city, state), Phone, Website, Email
+- Try to include website and phone for every vendor
+- Do NOT fabricate data — only include what you're confident about
+- Use "" for fields you're unsure of
 
 Return as JSON array only:
-[{"name":"...", "address":"...", "phone":"...", "website":"..."}]`;
+[{"name":"...", "address":"...", "phone":"...", "website":"...", "email":"..."}]`;
 
             try {
                 const response = await fetch(OPENAI_PROXY_URL, {
