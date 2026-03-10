@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personata Command Center</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: system-ui, sans-serif; background: #0a0a0f; color: #f5f5f5; min-height: 100vh; }
@@ -36,7 +33,6 @@
         
         .main-app { display: none; }
         .main-app.show { display: block; }
-        .setup-screen { display: block; }
         .setup-screen.hide { display: none; }
         
         .badge { display: inline-block; background: rgba(212,165,116,0.2); border: 1px solid #d4a574; padding: 8px 16px; border-radius: 20px; color: #d4a574; font-size: 14px; margin-top: 10px; }
@@ -141,73 +137,6 @@
         .error-box { background: rgba(200,100,100,0.1); border: 1px solid rgba(200,100,100,0.3); color: #e88; padding: 15px; border-radius: 8px; margin: 20px 0; }
         
         .vendor-count { background: rgba(212,165,116,0.2); padding: 4px 12px; border-radius: 12px; font-size: 13px; color: #d4a574; }
-
-        /* ===== Songwriter Brief Builder Styles ===== */
-        #songwriter .sw-sh{margin-bottom:32px}
-        #songwriter .sw-sh h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:#f5f5f5;margin-bottom:8px}
-        #songwriter .sw-sh p{font-size:14px;color:#888;max-width:640px}
-        #songwriter .sw-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,165,116,.15);border:1px solid #9a7d3d;border-radius:20px;padding:6px 16px;margin-bottom:24px;font-size:12px;font-weight:600;color:#d4a574;text-transform:uppercase;letter-spacing:1px}
-        #songwriter .sw-badge .d{width:8px;height:8px;border-radius:50%;background:#d4a574}
-        #songwriter .sw-fg{margin-bottom:24px}
-        #songwriter .sw-fr{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-        #songwriter .sw-fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-        #songwriter .sw-cd{background:#12121a;border:1px solid #333;border-radius:12px;padding:28px;margin-bottom:20px}
-        #songwriter .sw-cd-g{background:rgba(212,165,116,.06);border-color:#9a7d3d}
-        #songwriter .sw-scg{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:32px 0}
-        #songwriter .sw-scb{aspect-ratio:1;border:2px solid #333;border-radius:12px;background:#12121a;color:#f5f5f5;font-family:'Playfair Display',serif;font-size:32px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
-        #songwriter .sw-scb:hover{border-color:#9a7d3d;background:#1e1e2a}
-        #songwriter .sw-scb.sel{border-color:#d4a574;background:rgba(212,165,116,.15);color:#d4a574;box-shadow:0 0 30px rgba(212,165,116,.15)}
-        #songwriter .sw-pc{background:#12121a;border:1px solid #333;border-radius:12px;padding:24px;margin-bottom:16px}
-        #songwriter .sw-pch{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
-        #songwriter .sw-pn{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#d4a574,#9a7d3d);color:#0a0a0f;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace}
-        #songwriter .sw-pti{flex:1}
-        #songwriter .sw-pti input{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;background:transparent;border:none;border-bottom:1px solid #333;border-radius:0;padding:8px 4px;color:#f5f5f5}
-        #songwriter .sw-pti input:focus{border-color:#d4a574;box-shadow:none}
-        #songwriter .sw-nf{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid #333}
-        #songwriter .sw-ht{font-size:12px;color:#888;margin-top:6px;font-style:italic}
-        #songwriter .sw-sec{animation:sw-fi .3s ease}
-        @keyframes sw-fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-        #songwriter .sw-pvc{background:#fff;color:#1a1a1a;border-radius:12px;padding:48px;font-family:Georgia,serif;line-height:1.7;max-height:70vh;overflow-y:auto}
-        #songwriter .sw-pvc::-webkit-scrollbar-thumb{background:#ccc}
-        #songwriter .sw-pvc::-webkit-scrollbar-track{background:#f5f5f5}
-        #songwriter .sw-pvb{text-align:center;font-size:14px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:#333}
-        #songwriter .sw-pvr{border:none;border-top:2px solid #333;margin:16px 0}
-        #songwriter .sw-pvrl{border:none;border-top:1px solid #ddd;margin:16px 0}
-        #songwriter .sw-pvt{text-align:center;font-size:22px;margin:8px 0 4px;color:#1a1a1a}
-        #songwriter .sw-pvs{text-align:center;font-style:italic;color:#666;font-size:13px;margin-bottom:8px}
-        #songwriter .sw-pvm{text-align:center;font-size:12px;color:#999;margin-bottom:16px;line-height:1.8}
-        #songwriter .sw-pvst{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px;color:#1a1a1a}
-        #songwriter .sw-pvpb{border:1px solid #ddd;padding:16px 20px;margin-bottom:20px;line-height:1.8;font-size:14px;color:#1a1a1a}
-        #songwriter .sw-pvpb strong{color:#333}
-        #songwriter .sw-pvpt{margin-bottom:16px;padding-left:20px;border-left:3px solid #ddd;font-size:14px;color:#1a1a1a}
-        #songwriter .sw-pvpt strong{color:#222}
-        #songwriter .sw-pvvb{border:1px solid #bbb;padding:16px 20px;margin-top:24px;font-style:italic;font-size:14px;color:#444}
-        #songwriter .sw-pvf{text-align:center;margin-top:32px;font-size:12px;color:#999;letter-spacing:2px;text-transform:uppercase}
-        #songwriter .sw-pvsh{text-align:center;margin:40px 0 16px;padding:20px 0;border-top:2px solid #333;border-bottom:1px solid #ddd}
-        #songwriter label{color:#888}
-        #songwriter input[type="text"],#songwriter input[type="number"],#songwriter textarea,#songwriter select{background:#0a0a0f;border:1px solid #333;border-radius:8px;color:#fff;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;padding:12px 16px;width:100%;outline:none;transition:all .2s}
-        #songwriter input:focus,#songwriter textarea:focus,#songwriter select:focus{border-color:#d4a574;box-shadow:0 0 0 3px rgba(212,165,116,.15)}
-        #songwriter textarea{min-height:100px;resize:vertical;line-height:1.7}
-        #songwriter textarea.sw-tl{min-height:160px}
-        #songwriter select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
-        #songwriter ::placeholder{color:#666;opacity:.6}
-        #songwriter .sw-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:1px solid #333;border-radius:8px;background:#12121a;color:#f5f5f5;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.3px}
-        #songwriter .sw-btn:hover{border-color:#9a7d3d;background:#1e1e2a}
-        #songwriter .sw-btn-p{background:#d4a574;color:#0a0a0f;border-color:#d4a574;font-weight:600}
-        #songwriter .sw-btn-p:hover{background:#e0b884;border-color:#e0b884}
-        #songwriter .sw-btn svg{width:16px;height:16px}
-        #songwriter .sw-btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
-        #sw-pbar .sw-pstep{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;min-width:52px}
-        #sw-pbar .sw-pstep::before{content:'';position:absolute;top:14px;left:50%;right:-50%;height:2px;background:#333;z-index:0}
-        #sw-pbar .sw-pstep:last-child::before{display:none}
-        #sw-pbar .sw-pstep.done::before{background:#9a7d3d}
-        #sw-pbar .sw-pdot{width:32px;height:32px;border-radius:50%;border:2px solid #333;background:#0a0a0f;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#888;position:relative;z-index:1;transition:all .2s}
-        #sw-pbar .sw-pstep.on .sw-pdot{border-color:#d4a574;color:#d4a574;box-shadow:0 0 16px rgba(212,165,116,.15)}
-        #sw-pbar .sw-pstep.done .sw-pdot{border-color:#d4a574;background:#d4a574;color:#0a0a0f}
-        #sw-pbar .sw-plbl{margin-top:5px;font-size:9px;color:#888;letter-spacing:.3px;text-transform:uppercase;font-weight:500;white-space:nowrap;text-align:center}
-        #sw-pbar .sw-pstep.on .sw-plbl{color:#d4a574}
-        #sw-pbar .sw-pstep.done .sw-plbl{color:#bbb}
-        @media(max-width:768px){#songwriter .sw-fr,#songwriter .sw-fr3{grid-template-columns:1fr}#songwriter .sw-scg{grid-template-columns:repeat(3,1fr)}#songwriter .sw-pvc{padding:24px}#sw-pbar .sw-plbl{font-size:7px}}
     </style>
 </head>
 <body>
@@ -243,6 +172,12 @@
                 
                 <h2 style="color:#d4a574;margin-bottom:25px;font-family:Georgia,serif;font-size:1.8rem;text-align:center">Welcome</h2>
                 
+                <!-- Auth Tabs -->
+                <div style="display:flex;gap:0;margin-bottom:25px">
+                    <div class="auth-tab active" data-tab="login" style="flex:1;padding:12px;background:rgba(212,165,116,0.2);border:1px solid #d4a574;color:#d4a574;cursor:pointer;text-align:center;font-weight:500;border-radius:8px 0 0 8px">Sign In</div>
+                    <div class="auth-tab" data-tab="register" style="flex:1;padding:12px;background:#0a0a0f;border:1px solid #333;color:#888;cursor:pointer;text-align:center;font-weight:500;border-radius:0 8px 8px 0">Create Account</div>
+                </div>
+                
                 <!-- Error Message -->
                 <div id="authError" style="display:none;background:rgba(200,100,100,0.2);border:1px solid #c77d8e;padding:12px;border-radius:8px;color:#c77d8e;font-size:14px;margin-bottom:15px"></div>
                 
@@ -258,37 +193,65 @@
                     </div>
                     <button class="btn-full" id="loginBtn">Sign In</button>
                 </div>
+                
+                <!-- Register Form -->
+                <div id="registerForm" style="display:none">
+                    <div class="form-group" style="margin-bottom:15px">
+                        <label>Your Name</label>
+                        <input type="text" id="registerName" placeholder="Sarah Johnson">
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="At least 6 characters">
+                    </div>
+                    <button class="btn-full" id="registerBtn">Create Account</button>
+                </div>
+                
+                <!-- Google Sign In -->
+                <div style="display:flex;align-items:center;margin:20px 0;color:#666;font-size:13px">
+                    <div style="flex:1;height:1px;background:#333"></div>
+                    <span style="padding:0 15px">or</span>
+                    <div style="flex:1;height:1px;background:#333"></div>
+                </div>
+                <button id="googleSignInBtn" style="width:100%;padding:12px;background:#fff;border:none;border-radius:8px;color:#333;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Continue with Google
+                </button>
             </div>
         </div>
-    </div>
 
-    <!-- Profile Setup Modal (OUTSIDE setupScreen so it shows when setupScreen is hidden) -->
-    <div id="profileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:20px">
-        <div style="background:#12121a;border:1px solid #d4a574;border-radius:20px;padding:40px;max-width:450px;width:100%;position:relative">
-            <h2 style="color:#d4a574;margin-bottom:10px;font-family:Georgia,serif;font-size:1.8rem">Complete Your Profile</h2>
-            <p style="color:#888;margin-bottom:30px;font-size:0.95rem">Set up your territory to get started.</p>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Your ZIP Code</label>
-                    <input type="text" id="zipInput" placeholder="e.g. 33301" maxlength="5">
+        <!-- Profile Setup Modal (for new users after auth) -->
+        <div id="profileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:20px">
+            <div style="background:#12121a;border:1px solid #d4a574;border-radius:20px;padding:40px;max-width:450px;width:100%;position:relative">
+                <h2 style="color:#d4a574;margin-bottom:10px;font-family:Georgia,serif;font-size:1.8rem">Complete Your Profile</h2>
+                <p style="color:#888;margin-bottom:30px;font-size:0.95rem">Set up your territory to get started.</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Your ZIP Code</label>
+                        <input type="text" id="zipInput" placeholder="e.g. 33301" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Radius</label>
+                        <select id="radiusSelect">
+                            <option value="25">25 mi</option>
+                            <option value="50" selected>50 mi</option>
+                            <option value="100">100 mi</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Radius</label>
-                    <select id="radiusSelect">
-                        <option value="25">25 mi</option>
-                        <option value="50" selected>50 mi</option>
-                        <option value="100">100 mi</option>
-                    </select>
+                <div class="territory-info" id="territoryInfo">
+                    <div class="territory-name" id="territoryName"></div>
+                    <div class="territory-detail" id="territoryDetail"></div>
                 </div>
+                <button class="btn-full" id="setupBtn" disabled style="margin-top:20px;border-radius:50px;padding:15px">
+                    🚀 Launch Command Center
+                </button>
             </div>
-            <div class="territory-info" id="territoryInfo">
-                <div class="territory-name" id="territoryName"></div>
-                <div class="territory-detail" id="territoryDetail"></div>
-            </div>
-            <button class="btn-full" id="setupBtn" disabled style="margin-top:20px;border-radius:50px;padding:15px">
-                🚀 Launch Command Center
-            </button>
         </div>
     </div>
 
@@ -298,7 +261,6 @@
                 <h1>Personata</h1>
                 <div class="badge">
                     👤 <span id="headerRepName"></span> • 📍 <span id="headerCity"></span>, <span id="headerTerritory"></span> <span id="headerZip"></span> • <span id="headerRadius"></span> mi
-                    <a id="changeZipBtn">change</a>
                     <a id="signOutBtn">sign out</a>
                 </div>
             </header>
@@ -309,7 +271,6 @@
                 <div class="tab" data-tab="groups">FB Groups</div>
                 <div class="tab" data-tab="generate">✨ Content Creator</div>
                 <div class="tab" data-tab="library">Library</div>
-                <div class="tab" data-tab="songwriter">🎵 Songwriter Brief</div>
                 <div class="tab" data-tab="admin" id="adminTab" style="display:none;background:rgba(200,100,100,0.2);border-color:#c77d8e">🔐 Admin</div>
             </div>
 
@@ -438,7 +399,7 @@
             <div class="tab-content" id="vendors">
                 <h2 class="section-title">Local Wedding Vendors <span class="vendor-count" id="vendorCount">0</span></h2>
                 <div class="info-box">
-                    <strong>🤖 Powered by AI Web Search</strong> — Real vendor data verified through web search of Yelp, WeddingWire, The Knot, and Google. 
+                    <strong>🤖 Powered by ChatGPT Search</strong> — Real vendor data from Yelp, WeddingWire, The Knot, and Google. 
                     Click a category to search for vendors in your area.
                 </div>
                 <div class="vendor-controls">
@@ -467,11 +428,11 @@
                 <div class="info-box"><strong>Strategy:</strong> Use Expert Tips on regular days. Save Vendor Day posts for promo days.</div>
                 <div class="search-links" id="searchLinks"></div>
                 <h3 style="color:#d4a574;margin:20px 0 15px">📍 Local Groups</h3>
-                <table><thead><tr><th>Group</th><th>Members</th><th>Status</th><th>Notes</th></tr></thead><tbody id="localGroups"></tbody></table>
+                <table><thead><tr><th>Group</th><th>Members</th><th>Status</th><th>Notes</th><th>Contacted</th></tr></thead><tbody id="localGroups"></tbody></table>
                 <h3 style="color:#d4a574;margin:30px 0 15px">🇺🇸 National Groups</h3>
-                <table><thead><tr><th>Group</th><th>Members</th><th>Status</th><th>Notes</th></tr></thead><tbody id="nationalGroups"></tbody></table>
+                <table><thead><tr><th>Group</th><th>Members</th><th>Status</th><th>Notes</th><th>Contacted</th></tr></thead><tbody id="nationalGroups"></tbody></table>
                 <h3 style="color:#d4a574;margin:30px 0 15px">🎯 Niche Groups</h3>
-                <table><thead><tr><th>Group</th><th>Members</th><th>Status</th><th>Notes</th></tr></thead><tbody id="nicheGroups"></tbody></table>
+                <table><thead><tr><th>Group</th><th>Members</th><th>Status</th><th>Notes</th><th>Contacted</th></tr></thead><tbody id="nicheGroups"></tbody></table>
             </div>
 
             <div class="tab-content" id="generate">
@@ -481,7 +442,7 @@
                         <div class="ai-icon" style="background: linear-gradient(135deg, #8fd4a8, #5cb87a);">🎯</div>
                         <div>
                             <div class="ai-title" style="color: #8fd4a8;">Sales Benefits by Market</div>
-                            <div class="ai-subtitle">Learn how to pitch Personata Studios to each vendor type</div>
+                            <div class="ai-subtitle">Learn how to pitch Personata to each vendor type</div>
                         </div>
                     </div>
                     <div class="vendor-controls" style="margin-bottom:15px">
@@ -499,7 +460,7 @@
                         <button id="generateBenefitsBtn">🎯 Show Benefits & Pitch</button>
                     </div>
                     <div class="output-box" id="benefitsOutputBox">
-                        <p style="text-align:center;color:#666;padding:30px">Select a vendor type to see why they should partner with Personata Studios and how to pitch them</p>
+                        <p style="text-align:center;color:#666;padding:30px">Select a vendor type to see why they should partner with Personata and how to pitch them</p>
                     </div>
                 </div>
 
@@ -558,18 +519,6 @@
                 <h2 class="section-title">Content Library</h2>
                 <div class="card-grid" id="libraryGrid"></div>
             </div>
-
-            <!-- Songwriter Brief Builder Tab -->
-            <div class="tab-content" id="songwriter">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                    <h2 class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">🎵 Songwriter Brief Builder</h2>
-                    <button class="btn-sm btn-outline" onclick="SW.resetAll()">🔄 Reset Brief</button>
-                </div>
-                <div id="sw-wrap" style="max-width:900px;margin:0 auto">
-                    <div id="sw-pbar" style="display:flex;align-items:center;margin-bottom:48px;overflow-x:auto;padding-bottom:4px"></div>
-                    <div id="sw-main"></div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -582,14 +531,14 @@
 
     <script>
         // ==================== FIREBASE CONFIG ====================
+        // TODO: Replace with your Firebase project config from Firebase Console
         const firebaseConfig = {
-            apiKey: "AIzaSyBBYH5VkcMNY0nv5V6oeCdj03fRUya5NYE",
-            authDomain: "bridal-command-center.firebaseapp.com",
-            projectId: "bridal-command-center",
-            storageBucket: "bridal-command-center.firebasestorage.app",
-            messagingSenderId: "788464324599",
-            appId: "1:788464324599:web:36d95b6ab3b22513bd68f2",
-            measurementId: "G-JZVB9ZQ0QG"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         // Initialize Firebase
@@ -598,7 +547,7 @@
         const db = firebase.firestore();
 
         // ==================== CONFIG ====================
-        const OPENAI_PROXY_URL = 'https://openai-788464324599.us-central1.run.app';
+        const OPENAI_API_KEY = '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';
 
         // ==================== DATA ====================
         const STATES = {AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'Washington DC',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
@@ -645,65 +594,6 @@
             {id:'p5',type:'client-story',title:'The Groom Who Cried',content:"True story from last month:\n\nThe groom wanted to surprise his bride with a custom first dance song. He shared stories from their 7 years together.\n\nWhen she heard it at the reception, she looked at him and said 'How did you...?'\n\nHe was already crying. So was half the room.",used:false}
         ];
 
-        // ==================== NAME ROTATION SYSTEM ====================
-        const NAME_POOL = {
-            brides: ['Emma', 'Olivia', 'Ava', 'Isabella', 'Sophia', 'Mia', 'Charlotte', 'Amelia', 'Harper', 'Evelyn', 'Abigail', 'Emily', 'Elizabeth', 'Sofia', 'Avery', 'Ella', 'Scarlett', 'Grace', 'Chloe', 'Victoria', 'Riley', 'Aria', 'Lily', 'Aurora', 'Zoey', 'Nora', 'Hannah', 'Hazel', 'Luna', 'Savannah', 'Brooklyn', 'Leah', 'Zoe', 'Stella', 'Maya', 'Audrey', 'Claire', 'Lucy', 'Anna', 'Samantha', 'Caroline', 'Genesis', 'Aaliyah', 'Kennedy', 'Allison', 'Gabriella', 'Ashley', 'Madelyn', 'Addison', 'Natalie', 'Mackenzie', 'Delilah', 'Autumn', 'Valentina', 'Josephine', 'Bella', 'Skylar', 'Julia', 'Sophie', 'Katherine', 'Reagan', 'Madeline', 'Elena', 'Ivy', 'Faith', 'Andrea', 'Naomi', 'Ruby', 'Serenity', 'Peyton', 'Lauren', 'Maria', 'Eva', 'Piper', 'Lydia', 'Taylor', 'Morgan', 'Nicole', 'Jasmine', 'Rachel'],
-            grooms: ['Liam', 'Noah', 'Oliver', 'James', 'Elijah', 'William', 'Henry', 'Lucas', 'Benjamin', 'Theodore', 'Jack', 'Levi', 'Alexander', 'Mason', 'Ethan', 'Daniel', 'Jacob', 'Michael', 'Logan', 'Jackson', 'Sebastian', 'Aiden', 'Owen', 'Samuel', 'Ryan', 'Nathan', 'Dylan', 'Caleb', 'Luke', 'Isaac', 'Connor', 'Evan', 'Andrew', 'Joshua', 'Matthew', 'David', 'Joseph', 'Carter', 'Jayden', 'John', 'Gabriel', 'Anthony', 'Christian', 'Hunter', 'Cameron', 'Aaron', 'Thomas', 'Jordan', 'Justin', 'Austin', 'Kevin', 'Brandon', 'Adam', 'Patrick', 'Tyler', 'Jake', 'Marcus', 'Eric', 'Brian', 'Steven', 'Peter', 'Derek', 'Colin', 'Grant', 'Scott', 'Brett', 'Chase', 'Max', 'Cole', 'Trevor', 'Garrett', 'Kyle', 'Blake', 'Sean', 'Dominic', 'Victor', 'Ian', 'Jared', 'Dustin', 'Mitchell'],
-            fathers: ['Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles', 'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Mark', 'Donald', 'Steven', 'Paul', 'Andrew', 'Kenneth', 'George', 'Edward', 'Brian', 'Ronald', 'Timothy', 'Jason', 'Jeffrey', 'Frank', 'Scott', 'Eric', 'Stephen', 'Larry', 'Bruce', 'Dennis', 'Jerry', 'Greg', 'Raymond', 'Keith', 'Douglas', 'Terry', 'Roger', 'Carl', 'Gerald', 'Harold', 'Wayne', 'Arthur', 'Lawrence', 'Albert', 'Eugene', 'Russell', 'Roy', 'Louis'],
-            mothers: ['Mary', 'Patricia', 'Jennifer', 'Linda', 'Barbara', 'Elizabeth', 'Susan', 'Jessica', 'Sarah', 'Karen', 'Lisa', 'Nancy', 'Betty', 'Margaret', 'Sandra', 'Ashley', 'Kimberly', 'Emily', 'Donna', 'Michelle', 'Dorothy', 'Carol', 'Amanda', 'Melissa', 'Deborah', 'Stephanie', 'Rebecca', 'Sharon', 'Laura', 'Cynthia', 'Kathleen', 'Amy', 'Angela', 'Shirley', 'Anna', 'Brenda', 'Pamela', 'Emma', 'Nicole', 'Helen', 'Samantha', 'Katherine', 'Christine', 'Debra', 'Rachel', 'Carolyn', 'Janet', 'Catherine', 'Maria', 'Heather']
-        };
-
-        function getUsedNames() {
-            const stored = localStorage.getItem('personata_used_names');
-            if (!stored) return { names: [], timestamp: Date.now() };
-            const data = JSON.parse(stored);
-            // Clear if older than 14 days
-            if (Date.now() - data.timestamp > 14 * 24 * 60 * 60 * 1000) {
-                localStorage.removeItem('personata_used_names');
-                return { names: [], timestamp: Date.now() };
-            }
-            return data;
-        }
-
-        function saveUsedNames(names) {
-            localStorage.setItem('personata_used_names', JSON.stringify({
-                names: names,
-                timestamp: Date.now()
-            }));
-        }
-
-        function getRandomName(type) {
-            const usedData = getUsedNames();
-            const pool = NAME_POOL[type] || NAME_POOL.brides;
-            const available = pool.filter(n => !usedData.names.includes(n));
-            
-            // If we've used all names, reset the pool
-            if (available.length === 0) {
-                usedData.names = usedData.names.filter(n => !pool.includes(n));
-                saveUsedNames(usedData.names);
-                return pool[Math.floor(Math.random() * pool.length)];
-            }
-            
-            const name = available[Math.floor(Math.random() * available.length)];
-            usedData.names.push(name);
-            saveUsedNames(usedData.names);
-            return name;
-        }
-
-        function getNameInstructions() {
-            const bride = getRandomName('brides');
-            const groom = getRandomName('grooms');
-            const father = getRandomName('fathers');
-            const mother = getRandomName('mothers');
-            
-            return `IMPORTANT: When using names in stories, use ONLY these specific names for this post:
-- Bride's name: ${bride}
-- Groom's name: ${groom}  
-- Father's name: ${father}
-- Mother's name: ${mother}
-Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided above.`;
-        }
-
         // ==================== STATE ====================
         let currentUser = null;
         let userProfile = null;
@@ -711,6 +601,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
         let posts = [];
         let vendors = [];
         let socialAccounts = {};
+        let contactedGroups = {}; // persisted: { "Group Name": { contacted: true, contactedAt: "ISO string" } }
 
         // ==================== AUTH FUNCTIONS ====================
         function showAuthError(msg) {
@@ -794,23 +685,11 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             location.reload();
         }
 
-        function changeZip() {
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('zipInput').value = territory?.zip || '';
-            document.getElementById('radiusSelect').value = territory?.radius || 50;
-            if (territory?.zip) {
-                document.getElementById('territoryInfo').classList.add('show');
-                document.getElementById('territoryName').textContent = territory.stateName || '';
-                document.getElementById('territoryDetail').textContent = 'Real vendors via AI web search';
-                document.getElementById('setupBtn').disabled = false;
-            }
-            document.getElementById('profileModal').style.display = 'flex';
-        }
-
         // ==================== ADMIN CONFIG ====================
         // Add your admin email addresses here
         const ADMIN_EMAILS = [
-            'david@personatastudios.com'
+            'david@personata.com',
+            'admin@personata.com'
             // Add more admin emails as needed
         ];
 
@@ -827,17 +706,10 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                 if (userDoc.exists) {
                     userProfile = userDoc.data();
                     territory = userProfile.territory || null;
-                    
-                    // Ensure territory has stateName
-                    if (territory && territory.zip && !territory.stateName) {
-                        const state = ZIP_STATE[territory.zip.slice(0,3)];
-                        territory.state = state;
-                        territory.stateName = STATES[state];
-                    }
-                    
                     posts = userProfile.posts || DEFAULT_POSTS;
-                    vendors = []; // Always start fresh — vendors are searched live each session
+                    vendors = userProfile.vendors || [];
                     socialAccounts = userProfile.socialAccounts || {};
+                    contactedGroups = userProfile.contactedGroups || {};
                 }
                 
                 // Show admin tab if user is admin
@@ -853,13 +725,14 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             if (!currentUser) return;
             
             try {
-                await db.collection('users').doc(currentUser.uid).set({
+                await db.collection('users').doc(currentUser.uid).update({
                     territory: territory,
                     posts: posts,
+                    vendors: vendors,
                     socialAccounts: socialAccounts,
-                    email: currentUser.email,
+                    contactedGroups: contactedGroups,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
+                });
             } catch (error) {
                 console.error('Error saving user data:', error);
             }
@@ -929,34 +802,20 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
 
         // ==================== AUTH STATE LISTENER ====================
         auth.onAuthStateChanged(async (user) => {
-            console.log('Auth state changed:', user ? user.email : 'logged out');
             currentUser = user;
             
-            // Hide all screens first
-            document.getElementById('setupScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('profileModal').style.display = 'none';
-            
             if (user) {
-                try {
-                    await loadUserData();
-                    console.log('Territory loaded:', territory);
-                    
-                    if (territory && territory.zip) {
-                        // User has territory, show main app
-                        document.getElementById('mainApp').style.display = 'block';
-                        await showApp();
-                    } else {
-                        // User logged in but no territory, show profile setup
-                        document.getElementById('profileModal').style.display = 'flex';
-                    }
-                } catch (error) {
-                    console.error('Error in auth handler:', error);
+                await loadUserData();
+                
+                if (territory && territory.zip) {
+                    showApp();
+                } else {
+                    document.getElementById('setupScreen').classList.add('hide');
                     document.getElementById('profileModal').style.display = 'flex';
                 }
             } else {
-                // Not logged in, show setup/landing screen
-                document.getElementById('setupScreen').style.display = 'block';
+                document.getElementById('setupScreen').classList.remove('hide');
+                document.getElementById('mainApp').classList.remove('show');
             }
         });
 
@@ -971,10 +830,33 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                 hideAuthError();
             });
             
+            // Auth tabs
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.auth-tab').forEach(t => {
+                        t.style.background = '#0a0a0f';
+                        t.style.borderColor = '#333';
+                        t.style.color = '#888';
+                    });
+                    tab.style.background = 'rgba(212,165,116,0.2)';
+                    tab.style.borderColor = '#d4a574';
+                    tab.style.color = '#d4a574';
+                    hideAuthError();
+                    if (tab.dataset.tab === 'login') {
+                        document.getElementById('loginForm').style.display = 'block';
+                        document.getElementById('registerForm').style.display = 'none';
+                    } else {
+                        document.getElementById('loginForm').style.display = 'none';
+                        document.getElementById('registerForm').style.display = 'block';
+                    }
+                });
+            });
+            
             // Auth actions
             document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            document.getElementById('registerBtn').addEventListener('click', handleRegister);
+            document.getElementById('googleSignInBtn').addEventListener('click', handleGoogleSignIn);
             document.getElementById('signOutBtn').addEventListener('click', handleSignOut);
-            document.getElementById('changeZipBtn').addEventListener('click', changeZip);
             
             // Profile setup
             document.getElementById('zipInput').addEventListener('input', onZipInput);
@@ -985,7 +867,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             document.getElementById('nextFeatured').addEventListener('click', nextFeatured);
             document.getElementById('saveFeatured').addEventListener('click', saveFeatured);
             document.getElementById('generateTodayPost').addEventListener('click', generateTodayPost);
-            document.getElementById('searchVendorsBtn').addEventListener('click', () => searchVendors(false));
+            document.getElementById('searchVendorsBtn').addEventListener('click', searchVendors);
             document.getElementById('generateEmailBtn').addEventListener('click', generateEmailIntro);
             document.getElementById('generateBenefitsBtn').addEventListener('click', generateBenefits);
             
@@ -1021,7 +903,7 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                 const state = ZIP_STATE[zip.slice(0,3)];
                 if (state && STATES[state]) {
                     document.getElementById('territoryName').textContent = STATES[state];
-                    document.getElementById('territoryDetail').textContent = 'Real vendors via AI web search';
+                    document.getElementById('territoryDetail').textContent = 'Real vendors via ChatGPT search';
                     document.getElementById('territoryInfo').classList.add('show');
                     document.getElementById('setupBtn').disabled = false;
                     return;
@@ -1046,13 +928,13 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
         }
 
         async function showApp() {
-            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('setupScreen').classList.add('hide');
             document.getElementById('profileModal').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('mainApp').classList.add('show');
             document.getElementById('headerTerritory').textContent = territory.state;
             document.getElementById('headerZip').textContent = territory.zip;
             document.getElementById('headerRadius').textContent = territory.radius;
-            document.getElementById('headerRepName').textContent = currentUser?.email || 'User';
+            document.getElementById('headerRepName').textContent = userProfile?.name || 'User';
             
             // Try to get city name
             if (territory.city) {
@@ -1092,12 +974,6 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             if (tabId === 'admin' && isAdmin()) {
                 loadAdminData();
             }
-            
-            // Initialize songwriter brief on first visit
-            if (tabId === 'songwriter' && !window.swInitialized) {
-                window.swInitialized = true;
-                SW.init();
-            }
         }
 
         // ==================== RENDER ====================
@@ -1132,6 +1008,9 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
 
         function renderStats() {
             const localGroups = buildLocalGroups();
+            document.getElementById('statPosts').textContent = posts.length;
+            document.getElementById('statGroups').textContent = localGroups.length + GROUPS.national.length + GROUPS.niche.length;
+            document.getElementById('statVendors').textContent = vendors.length;
             document.getElementById('vendorCount').textContent = vendors.length;
         }
 
@@ -1182,12 +1061,35 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             const statusClass = g.status === 'active' ? 'status-ok' : 'status-vendor';
             const statusText = g.status === 'active' ? 'OK' : 'Vendor Days';
             const fbSearchUrl = `https://www.facebook.com/search/groups?q=${encodeURIComponent(g.name)}`;
-            return `<tr>
+            const gKey = g.name;
+            const gc = contactedGroups[gKey];
+            const isContacted = gc && gc.contacted;
+            const contactedDate = isContacted ? new Date(gc.contactedAt).toLocaleDateString() : '';
+            return `<tr style="${isContacted ? 'opacity:0.6' : ''}">
                 <td><a href="${fbSearchUrl}" target="_blank" style="color:#7dd3e8;text-decoration:none">${esc(g.name)}</a></td>
                 <td>${g.members}</td>
                 <td><span class="status ${statusClass}">${statusText}</span></td>
                 <td>${esc(g.notes)}</td>
+                <td>
+                    <label class="contact-checkbox" title="${isContacted ? 'Contacted on ' + contactedDate : 'Mark as contacted'}">
+                        <input type="checkbox" ${isContacted ? 'checked' : ''} onchange="toggleGroupContacted('${esc(gKey).replace(/'/g, "\\'")}')">
+                        <span class="checkmark"></span>
+                        <span class="contact-label">${isContacted ? '✓ ' + contactedDate : 'Contacted?'}</span>
+                    </label>
+                </td>
             </tr>`;
+        }
+
+        async function toggleGroupContacted(groupName) {
+            const current = contactedGroups[groupName];
+            if (current && current.contacted) {
+                delete contactedGroups[groupName];
+            } else {
+                contactedGroups[groupName] = { contacted: true, contactedAt: new Date().toISOString() };
+            }
+            await saveUserData();
+            renderGroups();
+            toast(contactedGroups[groupName] ? 'Group marked as contacted!' : 'Group unmarked');
         }
 
         function renderVendors() {
@@ -1208,21 +1110,14 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
                     </div>
                     <div class="vendor-name">${esc(v.name)}</div>
                     <div class="vendor-address">${esc(v.address || '')}</div>
-                    ${v.phone ? `<div class="vendor-phone">📞 <a href="tel:${v.phone}" style="color:#7dd3e8">${v.phone}</a></div>` : ''}
-                    ${v.email ? `<div class="vendor-phone">✉️ <a href="mailto:${v.email}" style="color:#7dd3e8">${v.email}</a></div>` : ''}
+                    ${v.phone ? `<div class="vendor-phone">📞 <a href="tel:${v.phone}">${v.phone}</a></div>` : ''}
                     ${v.contacted ? `<div class="contacted-date">📅 Contacted: ${new Date(v.contactedAt).toLocaleDateString()}</div>` : ''}
                     <div class="vendor-actions">
                         <a class="vendor-link" href="https://www.google.com/search?q=${encodeURIComponent(v.name + ' ' + (v.address || territory.stateName))}" target="_blank">🔍 Google</a>
-                        <a class="vendor-link" href="https://www.google.com/search?q=${encodeURIComponent('"' + v.name + '" ' + (v.address || territory.stateName) + ' official website')}" target="_blank" rel="noopener noreferrer">🌐 Website</a>
-                        ${v.email ? `<a class="vendor-link" href="mailto:${v.email}">✉️ Email</a>` : ''}
+                        ${v.website ? `<a class="vendor-link" href="${v.website}" target="_blank">🌐 Website</a>` : ''}
                     </div>
                 </div>
-            `).join('') + (currentSearchCategory ? `
-                <div style="grid-column:1/-1;text-align:center;padding:30px 0" id="loadMoreBtn">
-                    <button onclick="searchVendors(true)" style="padding:16px 48px;background:linear-gradient(135deg,#d4a574,#c49464);color:#0a0a12;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:1px;transition:all .3s">🔍 Load More</button>
-                    <p style="color:#666;font-size:12px;margin-top:10px">${vendors.filter(v=>v.category===currentSearchCategory).length} ${currentSearchCategory}s loaded</p>
-                </div>
-            ` : '');
+            `).join('');
         }
 
         async function toggleContacted(index) {
@@ -1237,233 +1132,109 @@ Do NOT use generic names like Sarah, John, Mike, etc. Use the names provided abo
             toast(vendors[index].contacted ? 'Marked as contacted!' : 'Unmarked');
         }
 
-        // ==================== VENDOR SEARCH (with Web Search) ====================
-        let currentSearchCategory = '';
-        
-        async function searchVendors(loadMore = false) {
-            const category = loadMore ? currentSearchCategory : document.getElementById('vendorCategory').value;
+        // ==================== CHATGPT VENDOR SEARCH ====================
+        async function searchVendors() {
+            const category = document.getElementById('vendorCategory').value;
             if (!category) {
                 toast('Please select a category first');
                 return;
             }
-            currentSearchCategory = category;
             
             const grid = document.getElementById('vendorGrid');
+            grid.innerHTML = `
+                <div class="loading" style="grid-column:1/-1">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Searching for ${category}s...</div>
+                    <div class="loading-sub">Using ChatGPT to search Yelp, WeddingWire, The Knot, and more</div>
+                </div>
+            `;
             
-            if (!loadMore) {
-                vendors = vendors.filter(v => v.category !== category);
-                grid.innerHTML = `
-                    <div class="loading" style="grid-column:1/-1">
-                        <div class="spinner"></div>
-                        <div class="loading-text">Searching for ${category}s...</div>
-                        <div class="loading-sub">Finding vendors with contact info (this may take a moment)...</div>
-                    </div>
-                `;
-            } else {
-                const loadBtn = document.getElementById('loadMoreBtn');
-                if (loadBtn) loadBtn.outerHTML = `
-                    <div class="loading" style="grid-column:1/-1" id="loadMoreLoading">
-                        <div class="spinner"></div>
-                        <div class="loading-text">Loading more ${category}s...</div>
-                    </div>
-                `;
-            }
-            
-            const existingNames = vendors.filter(v => v.category === category).map(v => v.name);
-            const excludeText = existingNames.length > 0 ? `\nDo NOT include these vendors I already have: ${existingNames.join(', ')}\n` : '';
-            
-            const prompt = `Find ${category}s near ${territory.zip} (${territory.stateName}) within ${territory.radius} miles.
-${excludeText}
-For each vendor provide name, address (city, state), phone, website URL, and email.
-Search WeddingWire, The Knot, Yelp, Google for real vendors.
-Return as JSON array: [{"name":"...","address":"...","phone":"...","website":"...","email":"..."}]
-Find at least 30 vendors. Use "" for unknown fields.`;
+            const prompt = `List all ${category}s that serve the ${territory.zip} (${territory.stateName}) area within ${territory.radius} miles. 
 
-            let newVendors = null;
-            
-            // Try search model first
-            try {
-                newVendors = await callVendorAPI('gpt-4o-search-preview', prompt, true);
-            } catch (e) {
-                console.log('Search model failed, trying fallback:', e.message);
-            }
-            
-            // Fallback to gpt-4o-mini
-            if (!newVendors) {
-                try {
-                    newVendors = await callVendorAPI('gpt-4o-mini', prompt, false);
-                } catch (e) {
-                    console.log('Fallback also failed:', e.message);
-                }
-            }
-            
-            if (!newVendors || newVendors.length === 0) {
-                if (!loadMore) {
-                    grid.innerHTML = `<div class="error-box" style="grid-column:1/-1"><strong>No vendors found.</strong> Try a different category or expand your search radius.</div>`;
-                }
-                return;
-            }
-            
-            newVendors = newVendors.map(v => ({
-                ...v,
-                type: category.replace('wedding ', ''),
-                category: category
-            }));
-            
-            const existingSet = new Set(vendors.map(v => v.name.toLowerCase()));
-            let added = 0;
-            newVendors.forEach(v => {
-                if (v.name && !existingSet.has(v.name.toLowerCase())) {
-                    vendors.push(v);
-                    existingSet.add(v.name.toLowerCase());
-                    added++;
-                }
-            });
-            
-            renderVendors();
-            renderStats();
-            
-            const total = vendors.filter(v => v.category === category).length;
-            toast(`Found ${added} ${category}s (${total} total)`);
-            
-            // Email enrichment for vendors missing email
-            const needEmail = vendors.filter(v => v.category === category && !v.email);
-            if (needEmail.length > 0) {
-                toast('Searching for emails...');
-                await findVendorEmails(needEmail);
-            }
-        }
-        
-        // Unified API call with robust JSON parsing
-        async function callVendorAPI(model, prompt, useSearch) {
-            const body = {
-                model: model,
-                messages: [
-                    {role: 'system', content: 'Find real wedding vendors. Return ONLY a JSON array. No markdown, no commentary, no explanation — just the JSON array.'},
-                    {role: 'user', content: prompt}
-                ],
-                max_tokens: 8000
-            };
-            if (useSearch) {
-                body.web_search_options = { search_context_size: 'high' };
-            } else {
-                body.temperature = 0.1;
-            }
-            
-            const response = await fetch(OPENAI_PROXY_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-            
-            if (!response.ok) {
-                const err = await response.json().catch(() => ({}));
-                throw new Error(err.error?.message || `API error ${response.status}`);
-            }
-            
-            const data = await response.json();
-            let content = data.choices?.[0]?.message?.content || '';
-            
-            return parseVendorJSON(content);
-        }
-        
-        // Robust JSON parser that handles messy AI responses
-        function parseVendorJSON(content) {
-            content = content.trim();
-            
-            // Strip markdown code blocks
-            content = content.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-            
-            // Try direct parse first
-            try {
-                const parsed = JSON.parse(content);
-                if (Array.isArray(parsed)) return parsed;
-            } catch (e) {}
-            
-            // Try extracting JSON array from surrounding text
-            const arrayMatch = content.match(/\[\s*\{[\s\S]*\}\s*\]/);
-            if (arrayMatch) {
-                try {
-                    const parsed = JSON.parse(arrayMatch[0]);
-                    if (Array.isArray(parsed)) return parsed;
-                } catch (e) {}
-            }
-            
-            // Try fixing common issues: trailing commas, missing brackets
-            let cleaned = content;
-            // Find the first [ and last ]
-            const firstBracket = cleaned.indexOf('[');
-            const lastBracket = cleaned.lastIndexOf(']');
-            if (firstBracket !== -1 && lastBracket > firstBracket) {
-                cleaned = cleaned.substring(firstBracket, lastBracket + 1);
-                // Remove trailing commas before ]
-                cleaned = cleaned.replace(/,\s*\]/g, ']').replace(/,\s*\}/g, '}');
-                try {
-                    const parsed = JSON.parse(cleaned);
-                    if (Array.isArray(parsed)) return parsed;
-                } catch (e) {}
-            }
-            
-            console.error('Could not parse vendor response:', content.substring(0, 500));
-            throw new Error('Failed to parse vendor data');
-        }
+Include vendors from nearby cities and counties.
 
-        // Focused email finder — processes vendors in batches
-        async function findVendorEmails(vendorList) {
-            const batchSize = 10;
-            let totalFound = 0;
-            
-            for (let i = 0; i < vendorList.length; i += batchSize) {
-                const batch = vendorList.slice(i, i + batchSize);
-                const vendorLines = batch.map(v => 
-                    `${v.name} | ${v.address || ''} | website: ${v.website || 'unknown'}`
-                ).join('\n');
+For EACH vendor, provide:
+- Name
+- Address (city, state)
+- Phone number (if available)
+- Website (if available)
+
+Format as JSON array:
+[{"name":"...", "address":"...", "phone":"...", "website":"..."}]
+
+Search Yelp, WeddingWire, The Knot, Google Business listings. Include at least 20-30 vendors if available. Only return the JSON array, no other text.`;
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            {role: 'system', content: 'You are a helpful assistant that searches for wedding vendors. Return only valid JSON arrays with no markdown formatting.'},
+                            {role: 'user', content: prompt}
+                        ],
+                        max_tokens: 4000,
+                        temperature: 0.3
+                    })
+                });
                 
-                try {
-                    const response = await fetch(OPENAI_PROXY_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            model: 'gpt-4o-search-preview',
-                            web_search_options: { search_context_size: 'high' },
-                            messages: [
-                                {role: 'system', content: 'You find email addresses for wedding vendors by searching the web. For each vendor, search their website contact/about page, WeddingWire profile, The Knot profile, Yelp page, and Facebook page. Return valid JSON only.'},
-                                {role: 'user', content: `Find the contact email address for each of these wedding vendors. Search their websites and online profiles.\n\n${vendorLines}\n\nReturn JSON array:\n[{"name":"exact name","email":"found@email.com"}]\n\nOnly include vendors where you found an email. Return [] if none found.`}
-                            ],
-                            max_tokens: 2000
-                        })
-                    });
-                    
-                    if (!response.ok) continue;
-                    
-                    const data = await response.json();
-                    let content = data.choices[0].message.content.trim();
-                    content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                    const jsonMatch = content.match(/\[[\s\S]*\]/);
-                    if (jsonMatch) content = jsonMatch[0];
-                    
-                    const results = JSON.parse(content);
-                    if (Array.isArray(results)) {
-                        results.forEach(r => {
-                            if (r.email && r.email.includes('@')) {
-                                const v = vendors.find(v => v.name.toLowerCase() === r.name.toLowerCase());
-                                if (v && !v.email) {
-                                    v.email = r.email;
-                                    totalFound++;
-                                }
-                            }
-                        });
-                    }
-                } catch (e) {
-                    console.error('Email batch error:', e);
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error?.message || 'API request failed');
                 }
-            }
-            
-            if (totalFound > 0) {
+                
+                const data = await response.json();
+                let content = data.choices[0].message.content.trim();
+                
+                // Clean up response - remove markdown if present
+                content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                
+                let newVendors;
+                try {
+                    newVendors = JSON.parse(content);
+                } catch (parseError) {
+                    console.error('Parse error:', parseError, 'Content:', content);
+                    throw new Error('Failed to parse vendor data');
+                }
+                
+                if (!Array.isArray(newVendors)) {
+                    throw new Error('Invalid response format');
+                }
+                
+                // Add category to each vendor
+                newVendors = newVendors.map(v => ({
+                    ...v,
+                    type: category.replace('wedding ', ''),
+                    category: category
+                }));
+                
+                // Add to existing vendors (avoid duplicates by name)
+                const existingNames = new Set(vendors.map(v => v.name.toLowerCase()));
+                newVendors.forEach(v => {
+                    if (!existingNames.has(v.name.toLowerCase())) {
+                        vendors.push(v);
+                        existingNames.add(v.name.toLowerCase());
+                    }
+                });
+                
                 await saveUserData();
                 renderVendors();
+                renderStats();
+                toast(`Found ${newVendors.length} ${category}s!`);
+                
+            } catch (error) {
+                console.error('Vendor search error:', error);
+                grid.innerHTML = `
+                    <div class="error-box" style="grid-column:1/-1">
+                        <strong>Search Error:</strong> ${error.message}<br><br>
+                        Please try again or check your API key.
+                    </div>
+                `;
             }
-            toast(totalFound > 0 ? `Found ${totalFound} email${totalFound > 1 ? 's' : ''}!` : 'Email search complete');
         }
 
         // ==================== SOCIAL ACCOUNTS ====================
@@ -1570,27 +1341,25 @@ Find at least 30 vendors. Use "" for unknown fields.`;
             document.getElementById('todayPostLoading').style.display = 'block';
             document.getElementById('todayPostContent').style.display = 'none';
             
-            const nameInstructions = getNameInstructions();
-            
             const prompts = {
                 'expert-tip': 'Create 1 Expert Tip about wedding music, first dances, or making weddings more personal and meaningful. Make it helpful and shareable.',
-                'client-story': `Create 1 short Client Story (anonymized) about an emotional moment involving custom wedding music. Make it touching and authentic.\n\n${nameInstructions}`,
+                'client-story': 'Create 1 short Client Story (anonymized) about an emotional moment involving custom wedding music. Make it touching and authentic.',
                 'poll': 'Create 1 engaging Poll Question about wedding music preferences, first dance choices, or wedding personalization. Include 3-4 answer options.',
                 'vendor-day': 'Create 1 Vendor Day promotional post introducing Personata Studios custom wedding songs. Highlight the conversation-driven process and that couples own 100% of their song.'
             };
 
             try {
-                const response = await fetch(OPENAI_PROXY_URL, {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json'
-                        
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
                     },
                     body: JSON.stringify({
                         model: 'gpt-4o-mini',
                         max_tokens: 1000,
                         messages: [
-                            { role: 'system', content: 'You create social media content for Personata Studios, a company that creates custom original wedding songs through real conversations (not forms or AI). Write as the vendor. Be warm, authentic, and engaging. Keep posts concise and perfect for Facebook groups. When telling client stories, ALWAYS use the specific names provided - never default to common names like Sarah, John, Mike, or Emily.' },
+                            { role: 'system', content: 'You create social media content for Personata Studios, a company that creates custom original wedding songs through real conversations (not forms or AI). Write as the vendor. Be warm, authentic, and engaging. Keep posts concise and perfect for Facebook groups.' },
                             { role: 'user', content: prompts[postType] }
                         ]
                     })
@@ -1667,11 +1436,11 @@ BODY: [email body]
 ---`;
 
             try {
-                const response = await fetch(OPENAI_PROXY_URL, {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json'
-                        
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
                     },
                     body: JSON.stringify({
                         model: 'gpt-4o-mini',
@@ -1761,7 +1530,7 @@ Personata Studios creates custom, original wedding songs through a conversation-
 Create a comprehensive sales training guide specifically for pitching to a ${vendorType}. Include:
 
 1. WHY THEY SHOULD CARE (3-4 specific benefits for a ${vendorType})
-- How does partnering with Personata Studios help THEIR business?
+- How does partnering with Personata help THEIR business?
 - What problems does it solve for their clients?
 - How does it make them look good?
 
@@ -1782,11 +1551,11 @@ Create a comprehensive sales training guide specifically for pitching to a ${ven
 Format clearly with headers and bullet points for easy reading.`;
 
             try {
-                const response = await fetch(OPENAI_PROXY_URL, {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json'
-                        
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
                     },
                     body: JSON.stringify({
                         model: 'gpt-4o-mini',
@@ -1849,11 +1618,9 @@ Format clearly with headers and bullet points for easy reading.`;
             const box = document.getElementById('outputBox');
             box.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">Generating content...</div></div>';
             
-            const nameInstructions = getNameInstructions();
-            
             const prompts = {
                 tips: 'Create 3 Expert Tips about wedding music',
-                stories: `Create 3 Client Stories (anonymized emotional moments). Each story should use DIFFERENT names.\n\n${nameInstructions}\n\nFor the second story, use: Bride: ${getRandomName('brides')}, Groom: ${getRandomName('grooms')}\nFor the third story, use: Bride: ${getRandomName('brides')}, Groom: ${getRandomName('grooms')}`,
+                stories: 'Create 3 Client Stories (anonymized emotional moments)',
                 polls: 'Create 3 Poll Questions for engagement',
                 vendor: 'Create 2 Vendor Day promotional posts',
                 comments: 'Create 4 Comment reply templates',
@@ -1861,17 +1628,17 @@ Format clearly with headers and bullet points for easy reading.`;
             };
 
             try {
-                const response = await fetch(OPENAI_PROXY_URL, {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json'
-                        
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
                     },
                     body: JSON.stringify({
                         model: 'gpt-4o-mini',
                         max_tokens: 3000,
                         messages: [
-                            { role: 'system', content: 'You create content for Personata Studios (custom wedding songs). Write as the VENDOR, not as a bride. Professional but warm. When telling client stories, ALWAYS use the specific names provided in the prompt - never default to common names like Sarah, John, Mike, or Emily. Format each piece as:\nTYPE: [type]\nTITLE: [title]\nCONTENT: [content]\n---' },
+                            { role: 'system', content: 'You create content for Personata Studios (custom wedding songs). Write as the VENDOR, not as a bride. Professional but warm. Format each piece as:\nTYPE: [type]\nTITLE: [title]\nCONTENT: [content]\n---' },
                             { role: 'user', content: prompts[type] }
                         ]
                     })
@@ -1952,170 +1719,6 @@ Format clearly with headers and bullet points for easy reading.`;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2000);
         }
-
-        // ==================== SONGWRITER BRIEF BUILDER ====================
-        const SW = (function() {
-            let SC = 0, CV = 'setup', songs = [], proj = {projectName:'',collectionType:'Demo Collection',eventDate:'',creativeDirector:''};
-
-            function ES(){return{songType:'',songTypeCustom:'',songTitle:'',songSubtitle:'',songStructure:'Standard (Verse/Chorus)',songTone:'',customerName:'',customerRelationship:'',singerName:'',singerAge:'',singingTo:'',singerWho:'',singerBackground:'',singerPersonality:'',singerEmotional:'',singerVoice:'',points:Array.from({length:10},()=>({title:'',body:''})),singerQuote:''}}
-
-            function SL(){const s=['setup','project'];for(let i=1;i<=SC;i++)s.push('info-'+i,'voice-'+i,'points-'+i);s.push('preview');return s}
-            function navigateTo(v){saveDOM();CV=v;render();window.scrollTo({top:0,behavior:'smooth'})}
-            function goNext(){const s=SL(),i=s.indexOf(CV);if(i<s.length-1)navigateTo(s[i+1])}
-            function goPrev(){const s=SL(),i=s.indexOf(CV);if(i>0)navigateTo(s[i-1])}
-
-            function saveDOM(){
-                if(CV==='project'){const g=id=>(document.getElementById(id)||{}).value||'';proj.projectName=g('sw-pn').trim();proj.collectionType=g('sw-ct');proj.eventDate=g('sw-ed').trim();proj.creativeDirector=g('sw-cd').trim();return}
-                const m=CV.match(/^(info|voice|points)-(\d+)$/);if(!m)return;
-                const x=+m[2]-1,s=songs[x],P='sw-s'+x+'-',g=id=>(document.getElementById(P+id)||{}).value||'';
-                if(m[1]==='info'){s.songType=g('st');s.songTypeCustom=g('stc').trim();s.songTitle=g('tt').trim();s.songSubtitle=g('sub').trim();s.songStructure=g('str');s.songTone=g('tn').trim()}
-                else if(m[1]==='voice'){s.customerName=g('cn').trim();s.customerRelationship=g('cr').trim();s.singerName=g('sn').trim();s.singerAge=g('sa').trim();s.singingTo=g('sto').trim();s.singerWho=g('sw').trim();s.singerBackground=g('sb').trim();s.singerPersonality=g('sp').trim();s.singerEmotional=g('se').trim();s.singerVoice=g('sv').trim()}
-                else{for(let i=0;i<10;i++){s.points[i].title=g('p'+i+'t').trim();s.points[i].body=g('p'+i+'b').trim()}s.singerQuote=g('q').trim()}
-            }
-
-            function render(){renderPB();const el=document.getElementById('sw-main');
-                if(CV==='setup')el.innerHTML=hSetup();
-                else if(CV==='project')el.innerHTML=hProj();
-                else if(CV==='preview')el.innerHTML=hPrev();
-                else{const m=CV.match(/^(info|voice|points)-(\d+)$/);if(m){const x=+m[2]-1;el.innerHTML=m[1]==='info'?hInfo(x):m[1]==='voice'?hVoice(x):hPts(x)}}
-            }
-            function renderPB(){const steps=SL(),ci=steps.indexOf(CV);document.getElementById('sw-pbar').innerHTML=steps.map((st,i)=>{
-                let l,d;if(st==='setup'){l='Setup';d='⚙'}else if(st==='project'){l='Project';d='P'}else if(st==='preview'){l='Export';d='✓'}
-                else{const[pt,n]=st.split('-');d=n+'.'+{info:'1',voice:'2',points:'3'}[pt];l='S'+n+' '+{info:'Info',voice:'Voice',points:'Pts'}[pt]}
-                return `<div class="sw-pstep ${i===ci?'on':i<ci?'done':''}" onclick="SW.navigateTo('${st}')"><div class="sw-pdot">${d}</div><div class="sw-plbl">${l}</div></div>`}).join('')}
-
-            function H(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-
-            function hSetup(){return `<div class="sw-sec"><div class="sw-sh"><h2>How Many Songs?</h2><p>Every project starts here. How many individual songs does this customer need? Each song gets its own persona, story points, and songwriter brief.</p></div>
-<div class="sw-scg">${[1,2,3,4,5,6].map(n=>`<button class="sw-scb ${SC===n?'sel':''}" onclick="SW.pickSC(${n})">${n}</button>`).join('')}</div>
-<div style="text-align:center;margin-top:8px;font-size:13px;color:#888">${SC>0?`<strong style="color:#d4a574">${SC} song${SC>1?'s':''}</strong> selected`:'Select 1–6 songs'}</div>
-<div class="sw-nf"><div></div><button class="sw-btn sw-btn-p" onclick="SW.goNext()" ${SC===0?'disabled':''}>Continue → Project Details</button></div></div>`}
-
-            function pickSC(n){SC=n;while(songs.length<n)songs.push(ES());if(songs.length>n)songs.length=n;render()}
-
-            function hProj(){const p=proj;return `<div class="sw-sec"><div class="sw-sh"><h2>Project Details</h2><p>The event, the client, and what we're creating.</p></div>
-<div class="sw-cd">
-<div class="sw-fg"><label>Project / Event Name</label><input type="text" id="sw-pn" value="${H(p.projectName)}" placeholder='e.g. "The Sullivan – Moriarity Wedding"'></div>
-<div class="sw-fr"><div class="sw-fg"><label>Collection Type</label><select id="sw-ct">${['Demo Collection','Final Production','Rush Order','Custom'].map(o=>`<option ${p.collectionType===o?'selected':''}>${o}</option>`).join('')}</select></div>
-<div class="sw-fg"><label>Event Date</label><input type="text" id="sw-ed" value="${H(p.eventDate)}" placeholder="e.g. September 14, 2025"></div></div>
-<div class="sw-fg"><label>Creative Director</label><input type="text" id="sw-cd" value="${H(p.creativeDirector)}" placeholder="Your name"></div>
-<div style="padding:16px 0 0;border-top:1px solid #333;margin-top:8px"><span style="font-size:13px;color:#888">This project has <strong style="color:#d4a574">${SC} song${SC>1?'s':''}</strong>. Each gets its own brief.</span></div></div>
-<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Song Count</button><button class="sw-btn sw-btn-p" onclick="SW.goNext()">Continue → Song 1 Info</button></div></div>`}
-
-            function hInfo(x){const s=songs[x],n=x+1,P='sw-s'+x+'-';
-const ots=['','Father-Daughter Dance','Mother-Son Dance','First Dance','Anniversary Song','Memorial / Tribute','Proposal','Birthday Tribute','Graduation','Corporate / Brand','Custom'];
-const str=['Standard (Verse/Chorus)','Dual Perspective','Narrative / Through-composed',"Songwriter's Discretion"];
-return `<div class="sw-sec"><div class="sw-badge"><div class="d"></div>Song ${n} of ${SC}</div>
-<div class="sw-sh"><h2>Song ${n} — Information</h2><p>Define this song's purpose, title, and emotional framing.</p></div>
-<div class="sw-cd">
-<div class="sw-fr"><div class="sw-fg"><label>Song Occasion / Type</label><select id="${P}st">${ots.map(o=>`<option value="${o}" ${s.songType===o?'selected':''}>${o||'— Select —'}</option>`).join('')}</select></div>
-<div class="sw-fg"><label>Custom Occasion</label><input type="text" id="${P}stc" value="${H(s.songTypeCustom)}" placeholder="If 'Custom' above"></div></div>
-<div class="sw-fg"><label>Song Title</label><input type="text" id="${P}tt" value="${H(s.songTitle)}" placeholder="Working title"><div class="sw-ht">Can be refined by the songwriter.</div></div>
-<div class="sw-fg"><label>Song Subtitle / Framing Line</label><input type="text" id="${P}sub" value="${H(s.songSubtitle)}" placeholder='e.g. "A father sings to his daughter on her wedding day"'><div class="sw-ht">One line that sets the emotional perspective.</div></div>
-<div class="sw-fr"><div class="sw-fg"><label>Structure</label><select id="${P}str">${str.map(o=>`<option ${s.songStructure===o?'selected':''}>${o}</option>`).join('')}</select></div>
-<div class="sw-fg"><label>Desired Tone</label><input type="text" id="${P}tn" value="${H(s.songTone)}" placeholder='e.g. "Stoic, tender, hard-won"'></div></div></div>
-<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Back</button><button class="sw-btn sw-btn-p" onclick="SW.goNext()">Continue → The Voice</button></div></div>`}
-
-            function hVoice(x){const s=songs[x],n=x+1,P='sw-s'+x+'-';
-return `<div class="sw-sec"><div class="sw-badge"><div class="d"></div>Song ${n} of ${SC}</div>
-<div class="sw-sh"><h2>Song ${n} — The Voice</h2><p>From your interview with the customer, build the persona whose voice the songwriter will write in.</p></div>
-<div class="sw-cd sw-cd-g" style="margin-bottom:20px">
-<div class="sw-fg" style="margin-bottom:12px"><label>Customer Being Interviewed</label><input type="text" id="${P}cn" value="${H(s.customerName)}" placeholder="Who are you interviewing? e.g. Emma Sullivan"></div>
-<div class="sw-fg" style="margin-bottom:0"><label>Relationship to the Voice</label><input type="text" id="${P}cr" value="${H(s.customerRelationship)}" placeholder="e.g. Daughter — telling us about her father Tom">
-<div class="sw-ht">The customer tells us the stories. The voice below is who the song is written <em>as</em>.</div></div></div>
-<div class="sw-cd"><div style="margin-bottom:20px"><span style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#d4a574;font-weight:600">Song Persona — The Voice the Songwriter Writes As</span></div>
-<div class="sw-fr3"><div class="sw-fg"><label>Name</label><input type="text" id="${P}sn" value="${H(s.singerName)}" placeholder="e.g. Tom Sullivan"></div>
-<div class="sw-fg"><label>Age</label><input type="number" id="${P}sa" value="${H(s.singerAge)}" placeholder="61"></div>
-<div class="sw-fg"><label>Singing To</label><input type="text" id="${P}sto" value="${H(s.singingTo)}" placeholder="e.g. His daughter Emma, 29"></div></div>
-<div class="sw-fg"><label>Who They Are</label><input type="text" id="${P}sw" value="${H(s.singerWho)}" placeholder="How the customer described them"><div class="sw-ht">Ask: "Tell me about this person. What do they do?"</div></div>
-<div class="sw-fg"><label>Background</label><textarea id="${P}sb" placeholder="Where they come from, cultural roots, family history.">${H(s.singerBackground)}</textarea><div class="sw-ht">Ask: "Where did they grow up? What shaped them?"</div></div>
-<div class="sw-fg"><label>Personality</label><textarea id="${P}sp" placeholder="How they move through the world.">${H(s.singerPersonality)}</textarea><div class="sw-ht">Ask: "How would you describe their personality?"</div></div>
-<div class="sw-fg"><label>Emotional Style</label><textarea id="${P}se" placeholder="How do they handle feelings?">${H(s.singerEmotional)}</textarea><div class="sw-ht">Ask: "How do they show love? What's hard for them?"</div></div>
-<div class="sw-fg"><label>Voice in the Song</label><textarea id="${P}sv" placeholder="Your creative director note to the songwriter.">${H(s.singerVoice)}</textarea><div class="sw-ht">Synthesize what you heard into songwriter guidance.</div></div></div>
-<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Back</button><button class="sw-btn sw-btn-p" onclick="SW.goNext()">Continue → 10 Points</button></div></div>`}
-
-            function hPts(x){const s=songs[x],n=x+1,P='sw-s'+x+'-';
-let cards='';for(let i=0;i<10;i++){cards+=`<div class="sw-pc"><div class="sw-pch"><div class="sw-pn">${i+1}</div><div class="sw-pti"><input type="text" id="${P}p${i}t" value="${H(s.points[i].title)}" placeholder="Moment title"></div></div>
-<div class="sw-fg" style="margin-bottom:0"><textarea class="sw-tl" id="${P}p${i}b" placeholder="What did the customer tell you about this moment?">${H(s.points[i].body)}</textarea></div></div>`}
-const isLast=x===SC-1,nxt=isLast?'Preview &amp; Export →':'Continue → Song '+(x+2)+' Info',act=isLast?"SW.navigateTo('preview')":"SW.goNext()";
-return `<div class="sw-sec"><div class="sw-badge"><div class="d"></div>Song ${n} of ${SC}</div>
-<div class="sw-sh"><h2>Song ${n} — 10 Points</h2><p>The moments, memories, and emotional truths from your interview. Each is a story only someone who listened would know.</p></div>
-${cards}
-<div class="sw-cd" style="margin-top:24px"><div class="sw-fg" style="margin-bottom:0"><label>Singer's Voice — In Their Own Words</label>
-<textarea class="sw-tl" id="${P}q" placeholder="Capture how the song's voice would express themselves.">${H(s.singerQuote)}</textarea>
-<div class="sw-ht">The closing quote that gives the songwriter the singer's authentic voice.</div></div></div>
-<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Back</button><button class="sw-btn sw-btn-p" onclick="${act}">${nxt}</button></div></div>`}
-
-            function hPrev(){saveDOM();const p=proj;let allH='';
-for(let i=0;i<SC;i++){const s=songs[i],n=i+1,ty=s.songType==='Custom'?s.songTypeCustom:s.songType,fp=s.points.filter(t=>t.title||t.body);
-let ph='';fp.forEach((t,j)=>{ph+=`<div class="sw-pvpt"><strong>${j+1}. ${t.title||'(Untitled)'}</strong> — ${t.body||'<em>No details.</em>'}</div>`});
-if(i>0)allH+=`<div class="sw-pvsh"><strong style="font-size:12px;letter-spacing:3px;color:#999">SONG ${n}</strong></div>`;
-allH+=`<div style="text-align:center;margin:20px 0"><strong style="font-size:15px;letter-spacing:1px">${(ty||'SONG '+n).toUpperCase()}</strong><br>
-<span style="font-size:20px;font-style:italic">\u201C${s.songTitle||'Untitled'}\u201D</span><br><em style="color:#666;font-size:13px">${s.songSubtitle||''}</em></div><hr class="sw-pvrl">
-<div class="sw-pvst">Singer Persona: ${s.singerName||'\u2014'}</div>
-<div class="sw-pvpb"><strong>Age:</strong> ${s.singerAge||'\u2014'}<br><strong>Who They Are:</strong> ${s.singerWho||'\u2014'}<br><strong>Background:</strong> ${s.singerBackground||'\u2014'}<br><strong>Personality:</strong> ${s.singerPersonality||'\u2014'}<br><strong>Emotional Style:</strong> ${s.singerEmotional||'\u2014'}<br><strong>Voice in the Song:</strong> ${s.singerVoice||'\u2014'}<br><strong>Singing To:</strong> ${s.singingTo||'\u2014'}</div>
-<div class="sw-pvst">10 Points for the Songwriter</div>${ph||'<p style="color:#999;font-style:italic">No points yet.</p>'}
-${s.singerQuote?`<div class="sw-pvvb"><strong>SINGER\u2019S VOICE:</strong> \u201C${s.singerQuote}\u201D</div>`:''}`}
-const sm=songs.map((s,i)=>(s.songType==='Custom'?s.songTypeCustom:s.songType)||'Song '+(i+1)).join(' \u2022 ');
-return `<div class="sw-sec"><div class="sw-sh"><h2>Preview &amp; Export</h2><p>Review the complete brief — all ${SC} song${SC>1?'s':''} — before exporting.</p></div>
-<div class="sw-pvc">
-<div class="sw-pvb">PERSONATA STUDIOS</div><hr class="sw-pvr"><div class="sw-pvt">Songwriter Briefs</div><div class="sw-pvs"><em>Singer Personas &amp; 10-Point Song Maps</em></div><hr class="sw-pvr">
-<div class="sw-pvm">${p.projectName||'Untitled Project'} \u2022 ${p.collectionType}${p.eventDate?' \u2022 '+p.eventDate:''}<br>${sm}<br>${p.creativeDirector?'Creative Director: '+p.creativeDirector:''}</div>
-${allH}
-<hr class="sw-pvr" style="margin-top:32px"><div class="sw-pvf">PERSONATA STUDIOS<br><em style="font-size:11px;letter-spacing:0">Every song has a story. We make sure yours is heard.</em><br>personatastudios.com</div></div>
-<div class="sw-nf"><button class="sw-btn" onclick="SW.goPrev()">← Edit</button><button class="sw-btn sw-btn-p" onclick="SW.exportDocx()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export .docx</button></div></div>`}
-
-            async function exportDocx(){
-                saveDOM();const p=proj;
-                const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,AlignmentType,BorderStyle,WidthType,PageBreak}=docx;
-                const bdr={style:BorderStyle.SINGLE,size:1,color:"999999"},bds={top:bdr,bottom:bdr,left:bdr,right:bdr};
-                function pr(l,v){return new Paragraph({spacing:{after:60},children:[new TextRun({text:l,bold:true,font:"Georgia",size:22}),new TextRun({text:v||"\u2014",font:"Georgia",size:22})]})}
-                function rl(){return new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"\u2501".repeat(50),font:"Georgia",size:18,color:"666666"})]})}
-                const ch=[];
-                const sm=songs.map((s,i)=>(s.songType==='Custom'?s.songTypeCustom:s.songType)||'Song '+(i+1)).join(' \u2022 ');
-                ch.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:80},children:[new TextRun({text:"PERSONATA STUDIOS",bold:true,font:"Georgia",size:28,characterSpacing:200})]}),rl(),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Songwriter Briefs",font:"Georgia",size:36})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Singer Personas & 10-Point Song Maps",italics:true,font:"Georgia",size:22,color:"666666"})]}),rl(),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:80},children:[new TextRun({text:p.projectName||'Untitled Project',font:"Georgia",size:24})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:`${p.collectionType} \u2022 ${SC} Song${SC>1?'s':''} \u2022 ${SC} Singer${SC>1?'s':''} \u2022 ${SC} Stor${SC>1?'ies':'y'}`,font:"Georgia",size:20,color:"666666"})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:"Each brief contains a singer persona and 10 key emotional/narrative points designed to guide the songwriter through the story the song needs to tell.",italics:true,font:"Georgia",size:20,color:"888888"})]}));
-
-                for(let i=0;i<SC;i++){const s=songs[i],n=i+1,ty=s.songType==='Custom'?s.songTypeCustom:s.songType,fp=s.points.filter(t=>t.title||t.body);
-                    if(i>0)ch.push(new Paragraph({children:[new PageBreak()]}));
-                    ch.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:60},children:[new TextRun({text:`SONG ${n} \u2022 ${(ty||'UNTITLED').toUpperCase()}`,bold:true,font:"Georgia",size:26})]}),
-                        new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:60},children:[new TextRun({text:`\u201C${s.songTitle||'Untitled'}\u201D`,italics:true,font:"Georgia",size:32})]}),
-                        new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:100},children:[new TextRun({text:s.songSubtitle||'',italics:true,font:"Georgia",size:22,color:"666666"})]}),rl(),
-                        new Paragraph({spacing:{before:200,after:160},children:[new TextRun({text:`Singer Persona: ${s.singerName||'\u2014'}`,bold:true,font:"Georgia",size:26})]}),
-                        new Table({width:{size:9360,type:WidthType.DXA},columnWidths:[9360],rows:[new TableRow({children:[new TableCell({borders:bds,width:{size:9360,type:WidthType.DXA},margins:{top:120,bottom:120,left:200,right:200},
-                            children:[pr("Age: ",s.singerAge),pr("Who They Are: ",s.singerWho),pr("Background: ",s.singerBackground),pr("Personality: ",s.singerPersonality),pr("Emotional Style: ",s.singerEmotional),pr("Voice in the Song: ",s.singerVoice),pr("Singing To: ",s.singingTo)]})]})]})
-                    );
-                    ch.push(new Paragraph({spacing:{before:360,after:200},children:[new TextRun({text:"10 POINTS FOR THE SONGWRITER",bold:true,font:"Georgia",size:26})]}));
-                    fp.forEach((t,j)=>{ch.push(new Paragraph({spacing:{before:200,after:80},indent:{left:360},children:[new TextRun({text:`${j+1}. ${t.title||'(Untitled)'}`,bold:true,font:"Georgia",size:22}),new TextRun({text:` \u2014 ${t.body||''}`,font:"Georgia",size:22})]}))});
-                    if(s.singerQuote){ch.push(new Paragraph({spacing:{before:300},children:[]}),
-                        new Table({width:{size:9360,type:WidthType.DXA},columnWidths:[9360],rows:[new TableRow({children:[new TableCell({borders:bds,width:{size:9360,type:WidthType.DXA},margins:{top:120,bottom:120,left:200,right:200},
-                            children:[new Paragraph({children:[new TextRun({text:"SINGER\u2019S VOICE: ",bold:true,font:"Georgia",size:22}),new TextRun({text:`\u201C${s.singerQuote}\u201D`,italics:true,font:"Georgia",size:22})]})]})]})]}))}
-                }
-                ch.push(new Paragraph({children:[new PageBreak()]}),rl(),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:200,after:120},children:[new TextRun({text:`${SC} Song${SC>1?'s':''}. ${SC} Voice${SC>1?'s':''}. One ${p.projectName?p.projectName.split(' ').pop():'Story'}.`,font:"Georgia",size:24})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Each persona is a real person with a real story.",font:"Georgia",size:22,color:"666666"})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:120},children:[new TextRun({text:"Each point is a moment that only emerged because someone listened.",italics:true,font:"Georgia",size:22,color:"666666"})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"That\u2019s the Personata Studios difference.",italics:true,font:"Georgia",size:22,color:"999999"})]}),rl(),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:120,after:40},children:[new TextRun({text:"PERSONATA STUDIOS",bold:true,font:"Georgia",size:22,characterSpacing:200})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"Every song has a story. We make sure yours is heard.",italics:true,font:"Georgia",size:20,color:"666666"})]}),
-                    new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"personatastudios.com",font:"Georgia",size:20,color:"999999"})]}));
-
-                const doc=new Document({styles:{default:{document:{run:{font:"Georgia",size:22}}}},sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:ch}]});
-                const blob=await Packer.toBlob(doc);
-                saveAs(blob,p.projectName?`Personata_Briefs_${p.projectName.replace(/[^a-zA-Z0-9]/g,'_')}.docx`:'Personata_Songwriter_Briefs.docx');
-                toast(`Exported ${SC} song brief${SC>1?'s':''}!`);
-            }
-
-            function resetAll(){if(!confirm('Clear everything and start over?'))return;SC=0;songs=[];proj={projectName:'',collectionType:'Demo Collection',eventDate:'',creativeDirector:''};CV='setup';navigateTo('setup');toast('All cleared.')}
-
-            function init(){navigateTo('setup')}
-
-            return {navigateTo, goNext, goPrev, pickSC, exportDocx, resetAll, init};
-        })();
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
