@@ -392,7 +392,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        const OPENAI_API_KEY = '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';
+        const OPENAI_API_KEY = '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';
 
         const STATES = {AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'Washington DC',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 
@@ -609,10 +609,10 @@
 
         function renderStats(){
             const lg=buildLocalGroups();
-            document.getElementById('statPosts').textContent=posts.length;
-            document.getElementById('statGroups').textContent=lg.length+GROUPS.national.length+GROUPS.niche.length;
-            document.getElementById('statVendors').textContent=vendors.length;
-            document.getElementById('vendorCount').textContent=vendors.length;
+            const sp=document.getElementById('statPosts'); if(sp) sp.textContent=posts.length;
+            const sg=document.getElementById('statGroups'); if(sg) sg.textContent=lg.length+GROUPS.national.length+GROUPS.niche.length;
+            const sv=document.getElementById('statVendors'); if(sv) sv.textContent=vendors.length;
+            const vc=document.getElementById('vendorCount'); if(vc) vc.textContent=vendors.length;
         }
 
         function renderLibrary(){
